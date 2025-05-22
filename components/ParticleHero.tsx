@@ -2,6 +2,7 @@
 
 import { useRef, useEffect, useState } from "react"
 import { ArrowDown } from "lucide-react"
+import Link from "next/link"
 
 interface ParticleHeroProps {
   onExploreClick?: () => void
@@ -25,15 +26,6 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
     window.addEventListener("resize", handleResize)
     return () => window.removeEventListener("resize", handleResize)
   }, [])
-
-  // Simple click handler that doesn't destructure anything
-  const handleClick = () => {
-    if (onExploreClick) {
-      onExploreClick()
-    } else {
-      window.location.href = "/portfolio"
-    }
-  }
 
   // Particle animation effect
   useEffect(() => {
@@ -342,13 +334,19 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
 
       {/* Centered call-to-action button */}
       <div className="absolute bottom-[100px] text-center z-10">
-        <button
-          onClick={handleClick}
+        <Link
+          href="/portfolio"
           className="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-full transition-colors duration-300 flex items-center gap-2 shadow-lg"
+          onClick={(e) => {
+            if (onExploreClick) {
+              e.preventDefault()
+              onExploreClick()
+            }
+          }}
         >
           Explore my work
           <ArrowDown className="w-4 h-4" />
-        </button>
+        </Link>
       </div>
     </div>
   )

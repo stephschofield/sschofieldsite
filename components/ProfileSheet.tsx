@@ -7,11 +7,30 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { MapPin, Calendar, Github, Linkedin, Twitter } from "lucide-react"
 
-export function ProfileSheet() {
+interface ProfileSheetProps {
+  auth?: {
+    user?: {
+      name?: string
+      email?: string
+      image?: string
+      location?: string
+      joinDate?: string
+      bio?: string
+      skills?: string[]
+      socialLinks?: {
+        github?: string
+        linkedin?: string
+        twitter?: string
+      }
+    }
+  }
+}
+
+export function ProfileSheet({ auth }: ProfileSheetProps) {
   const [isOpen, setIsOpen] = useState(false)
 
-  // Default user info - no auth required
-  const user = {
+  // Provide default values if auth is undefined
+  const user = auth?.user || {
     name: "Stephanie Schofield",
     email: "stephanie@example.com",
     image: "/stephanie-profile.jpeg",
@@ -31,8 +50,8 @@ export function ProfileSheet() {
       <SheetTrigger asChild>
         <Button variant="ghost" size="sm" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
-            <AvatarImage src={user.image || "/placeholder.svg"} alt={user.name} />
-            <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+            <AvatarImage src={user.image || "/stephanie-profile.jpeg"} alt={user.name || "Profile"} />
+            <AvatarFallback>{user.name?.charAt(0) || "S"}</AvatarFallback>
           </Avatar>
         </Button>
       </SheetTrigger>
@@ -44,8 +63,8 @@ export function ProfileSheet() {
         <div className="mt-6 space-y-6">
           <div className="flex items-center space-x-4">
             <Avatar className="h-16 w-16">
-              <AvatarImage src={user.image || "/placeholder.svg"} alt={user.name} />
-              <AvatarFallback className="text-lg">{user.name.charAt(0)}</AvatarFallback>
+              <AvatarImage src={user.image || "/stephanie-profile.jpeg"} alt={user.name || "Profile"} />
+              <AvatarFallback className="text-lg">{user.name?.charAt(0) || "S"}</AvatarFallback>
             </Avatar>
             <div>
               <h3 className="text-lg font-semibold">{user.name}</h3>
@@ -72,7 +91,7 @@ export function ProfileSheet() {
           <div>
             <h4 className="text-sm font-medium mb-2">Skills</h4>
             <div className="flex flex-wrap gap-2">
-              {user.skills.map((skill) => (
+              {user.skills?.map((skill) => (
                 <Badge key={skill} variant="secondary">
                   {skill}
                 </Badge>
@@ -83,21 +102,21 @@ export function ProfileSheet() {
           <div>
             <h4 className="text-sm font-medium mb-2">Social Links</h4>
             <div className="flex space-x-2">
-              {user.socialLinks.github && (
+              {user.socialLinks?.github && (
                 <Button variant="outline" size="sm" asChild>
                   <a href={user.socialLinks.github} target="_blank" rel="noopener noreferrer">
                     <Github className="h-4 w-4" />
                   </a>
                 </Button>
               )}
-              {user.socialLinks.linkedin && (
+              {user.socialLinks?.linkedin && (
                 <Button variant="outline" size="sm" asChild>
                   <a href={user.socialLinks.linkedin} target="_blank" rel="noopener noreferrer">
                     <Linkedin className="h-4 w-4" />
                   </a>
                 </Button>
               )}
-              {user.socialLinks.twitter && (
+              {user.socialLinks?.twitter && (
                 <Button variant="outline" size="sm" asChild>
                   <a href={user.socialLinks.twitter} target="_blank" rel="noopener noreferrer">
                     <Twitter className="h-4 w-4" />

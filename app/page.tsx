@@ -7,8 +7,7 @@ export default function Home() {
   const router = useRouter()
 
   const handleExploreClick = () => {
-    // Use window.location for more reliable navigation
-    window.location.href = "/portfolio"
+    router.push("/portfolio")
   }
 
   return <ParticleHero onExploreClick={handleExploreClick} />
