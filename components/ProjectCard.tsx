@@ -7,11 +7,11 @@ interface ProjectCardProps {
   title: string
   description: string
   imageSrc: string
-  tags: string[]
+  tags?: string[]
   href: string
 }
 
-export default function ProjectCard({ title, description, imageSrc, tags, href }: ProjectCardProps) {
+export default function ProjectCard({ title, description, imageSrc, tags = [], href }: ProjectCardProps) {
   return (
     <Link href={href}>
       <Card className="overflow-hidden h-full transition-all duration-300 hover:shadow-lg">
@@ -29,11 +29,12 @@ export default function ProjectCard({ title, description, imageSrc, tags, href }
           <p className="text-muted-foreground mb-4">{description}</p>
         </CardContent>
         <CardFooter className="px-6 pb-6 pt-0 flex flex-wrap gap-2">
-          {tags.map((tag) => (
-            <Badge key={tag} variant="secondary">
-              {tag}
-            </Badge>
-          ))}
+          {Array.isArray(tags) &&
+            tags.map((tag) => (
+              <Badge key={tag} variant="secondary">
+                {tag}
+              </Badge>
+            ))}
         </CardFooter>
       </Card>
     </Link>
