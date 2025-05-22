@@ -9,6 +9,7 @@ export default function ProductShowcase() {
   const [containerWidth, setContainerWidth] = useState(0)
   const containerRef = useRef<HTMLDivElement>(null)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
+  const resizeObserverRef = useRef<ResizeObserver | null>(null)
 
   const products = [
     {
@@ -33,7 +34,7 @@ export default function ProductShowcase() {
     },
   ]
 
-  // Handle resize to update container width
+  // Fix: Handle resize to update container width
   useEffect(() => {
     const updateWidth = () => {
       if (containerRef.current) {
@@ -44,16 +45,31 @@ export default function ProductShowcase() {
     // Initial width calculation
     updateWidth()
 
-    // Add resize listener
-    window.addEventListener("resize", updateWidth)
+    // Use ResizeObserver if available
+    if (typeof ResizeObserver !== "undefined") {
+      resizeObserverRef.current = new ResizeObserver(updateWidth)
+      if (containerRef.current) {
+        resizeObserverRef.current.observe(containerRef.current)
+      }
+    } else {
+      // Fallback to window resize event
+      window.addEventListener("resize", updateWidth)
+    }
 
     // Cleanup
     return () => {
-      window.removeEventListener("resize", updateWidth)
+      if (resizeObserverRef.current) {
+        if (containerRef.current) {
+          resizeObserverRef.current.unobserve(containerRef.current)
+        }
+        resizeObserverRef.current.disconnect()
+      } else {
+        window.removeEventListener("resize", updateWidth)
+      }
     }
-  }, [])
+  }, []) // Empty dependency array - only run on mount
 
-  // Handle auto-rotation
+  // Fix: Handle auto-rotation
   useEffect(() => {
     // Clear any existing interval
     if (intervalRef.current) {
@@ -71,7 +87,7 @@ export default function ProductShowcase() {
         clearInterval(intervalRef.current)
       }
     }
-  }, [products.length])
+  }, [products.length]) // Only re-run if products.length changes
 
   return (
     <section className="py-20 bg-white">

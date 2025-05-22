@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button"
 import {
   CommandDialog,
   CommandEmpty,
@@ -9,22 +10,8 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator,
-  CommandShortcut,
 } from "@/components/ui/command"
-import {
-  Home,
-  User,
-  Briefcase,
-  Mail,
-  FileText,
-  Github,
-  Linkedin,
-  Twitter,
-  Search,
-  Calendar,
-  Settings,
-} from "lucide-react"
+import { Search } from "lucide-react"
 
 export function CommandMenu() {
   const [open, setOpen] = useState(false)
@@ -49,85 +36,37 @@ export function CommandMenu() {
 
   return (
     <>
-      <button
+      <Button
+        variant="outline"
+        className="relative h-9 w-9 p-0 xl:h-10 xl:w-60 xl:justify-start xl:px-3 xl:py-2"
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
       >
-        <Search className="h-4 w-4" />
-        <span className="hidden sm:inline-flex">Search...</span>
-        <kbd className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
+        <Search className="h-4 w-4 xl:mr-2" aria-hidden="true" />
+        <span className="hidden xl:inline-flex">Search...</span>
+        <span className="sr-only">Search</span>
+        <kbd className="pointer-events-none absolute right-1.5 top-2 hidden h-6 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 xl:flex">
           <span className="text-xs">⌘</span>K
         </kbd>
-      </button>
+      </Button>
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput placeholder="Type a command or search..." />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading="Navigation">
-            <CommandItem onSelect={() => runCommand(() => router.push("/"))}>
-              <Home className="mr-2 h-4 w-4" />
-              <span>Home</span>
-              <CommandShortcut>⌘H</CommandShortcut>
-            </CommandItem>
-            <CommandItem onSelect={() => runCommand(() => router.push("/#about"))}>
-              <User className="mr-2 h-4 w-4" />
-              <span>About</span>
-              <CommandShortcut>⌘A</CommandShortcut>
-            </CommandItem>
-            <CommandItem onSelect={() => runCommand(() => router.push("/projects"))}>
-              <Briefcase className="mr-2 h-4 w-4" />
-              <span>Projects</span>
-              <CommandShortcut>⌘P</CommandShortcut>
-            </CommandItem>
-            <CommandItem onSelect={() => runCommand(() => router.push("/#contact"))}>
-              <Mail className="mr-2 h-4 w-4" />
-              <span>Contact</span>
-              <CommandShortcut>⌘C</CommandShortcut>
-            </CommandItem>
-          </CommandGroup>
-          <CommandSeparator />
-          <CommandGroup heading="Projects">
-            <CommandItem onSelect={() => runCommand(() => router.push("/projects/flowspace"))}>
-              <FileText className="mr-2 h-4 w-4" />
-              <span>Flowspace</span>
-            </CommandItem>
-            <CommandItem onSelect={() => runCommand(() => router.push("/projects/mindfull"))}>
-              <FileText className="mr-2 h-4 w-4" />
-              <span>Mindfull</span>
-            </CommandItem>
-            <CommandItem onSelect={() => runCommand(() => router.push("/projects/palette"))}>
-              <FileText className="mr-2 h-4 w-4" />
-              <span>Palette</span>
-            </CommandItem>
-            <CommandItem onSelect={() => runCommand(() => router.push("/projects/typeform"))}>
-              <FileText className="mr-2 h-4 w-4" />
-              <span>Typeform</span>
-            </CommandItem>
-          </CommandGroup>
-          <CommandSeparator />
-          <CommandGroup heading="Social">
-            <CommandItem onSelect={() => runCommand(() => window.open("https://github.com", "_blank"))}>
-              <Github className="mr-2 h-4 w-4" />
-              <span>GitHub</span>
-            </CommandItem>
-            <CommandItem onSelect={() => runCommand(() => window.open("https://linkedin.com", "_blank"))}>
-              <Linkedin className="mr-2 h-4 w-4" />
-              <span>LinkedIn</span>
-            </CommandItem>
-            <CommandItem onSelect={() => runCommand(() => window.open("https://twitter.com", "_blank"))}>
-              <Twitter className="mr-2 h-4 w-4" />
-              <span>Twitter</span>
-            </CommandItem>
-          </CommandGroup>
-          <CommandSeparator />
-          <CommandGroup heading="Utilities">
-            <CommandItem onSelect={() => runCommand(() => router.push("/schedule"))}>
-              <Calendar className="mr-2 h-4 w-4" />
-              <span>Schedule a Call</span>
-            </CommandItem>
-            <CommandItem onSelect={() => runCommand(() => router.push("/settings"))}>
-              <Settings className="mr-2 h-4 w-4" />
-              <span>Settings</span>
+          <CommandGroup heading="Links">
+            <CommandItem onSelect={() => runCommand(() => router.push("/"))}>Home</CommandItem>
+            <CommandItem onSelect={() => runCommand(() => router.push("/portfolio"))}>Portfolio</CommandItem>
+            <CommandItem onSelect={() => runCommand(() => router.push("/projects"))}>Projects</CommandItem>
+            <CommandItem
+              onSelect={() => {
+                runCommand(() => {
+                  const contactSection = document.querySelector("#contact")
+                  if (contactSection) {
+                    contactSection.scrollIntoView({ behavior: "smooth" })
+                  }
+                })
+              }}
+            >
+              Contact
             </CommandItem>
           </CommandGroup>
         </CommandList>

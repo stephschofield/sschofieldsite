@@ -7,37 +7,45 @@ import { motion, useInView } from "framer-motion"
 export default function LottieSection() {
   const containerRef = useRef<HTMLDivElement>(null)
   const lottieRef = useRef<HTMLDivElement>(null)
+  const animationRef = useRef<any>(null)
   const isInView = useInView(containerRef, { once: true, amount: 0.3 })
   const [lottieLoaded, setLottieLoaded] = useState(false)
 
+  // Fix: Separate animation loading from state updates
   useEffect(() => {
-    let animation: any = null
-
+    // Only load the animation once
     if (lottieRef.current && !lottieLoaded) {
-      animation = lottie.loadAnimation({
-        container: lottieRef.current,
-        renderer: "svg",
-        loop: true,
-        autoplay: false,
-        path: "https://assets5.lottiefiles.com/packages/lf20_iorpbol0.json",
-      })
+      try {
+        animationRef.current = lottie.loadAnimation({
+          container: lottieRef.current,
+          renderer: "svg",
+          loop: true,
+          autoplay: false,
+          path: "https://assets5.lottiefiles.com/packages/lf20_iorpbol0.json",
+        })
 
-      setLottieLoaded(true)
+        // Set loaded state after animation is loaded
+        animationRef.current.addEventListener("DOMLoaded", () => {
+          setLottieLoaded(true)
+        })
+      } catch (error) {
+        console.error("Error loading Lottie animation:", error)
+      }
     }
 
+    // Cleanup
     return () => {
-      if (animation) {
-        animation.destroy()
+      if (animationRef.current) {
+        animationRef.current.destroy()
+        animationRef.current = null
       }
     }
-  }, [lottieLoaded])
+  }, []) // Empty dependency array - only run on mount
 
+  // Fix: Separate effect for playing animation when in view
   useEffect(() => {
-    if (isInView && lottieLoaded) {
-      const animation = lottie.getRegisteredAnimations()[0]
-      if (animation) {
-        animation.play()
-      }
+    if (isInView && lottieLoaded && animationRef.current) {
+      animationRef.current.play()
     }
   }, [isInView, lottieLoaded])
 

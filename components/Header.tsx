@@ -1,9 +1,7 @@
 "use client"
 
-import type React from "react"
-
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { motion } from "framer-motion"
 import { Menu } from "lucide-react"
 import FullScreenMenu from "./FullScreenMenu"
@@ -16,17 +14,11 @@ import { ThemeSwitcher } from "./ThemeSwitcher"
 export default function Header() {
   const [mounted, setMounted] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const router = useRouter()
 
   useEffect(() => setMounted(true), [])
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
-  }
-
-  const handleLogoClick = (e: React.MouseEvent) => {
-    e.preventDefault()
-    router.push("/")
   }
 
   return (
@@ -39,10 +31,10 @@ export default function Header() {
       >
         <nav className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
           <div className="flex lg:flex-1">
-            <a href="/" onClick={handleLogoClick} className="-m-1.5 p-1.5 cursor-pointer">
+            <Link href="/" className="-m-1.5 p-1.5 cursor-pointer">
               <span className="sr-only">Stephanie Schofield</span>
               <span className="text-xl font-bold">Stephanie Schofield</span>
-            </a>
+            </Link>
           </div>
 
           <MainNav />

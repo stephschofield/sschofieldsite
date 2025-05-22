@@ -7,11 +7,43 @@ export default function Marquee() {
   const containerRef = useRef<HTMLDivElement>(null)
   const [width, setWidth] = useState(0)
 
+  // Fix: Use a proper dependency array and resize observer
   useEffect(() => {
+    // Initial width calculation
     if (containerRef.current) {
       setWidth(containerRef.current.scrollWidth - containerRef.current.offsetWidth)
     }
-  }, [containerRef.current?.scrollWidth, containerRef.current?.offsetWidth])
+
+    // Set up resize observer to update width when container size changes
+    const handleResize = () => {
+      if (containerRef.current) {
+        setWidth(containerRef.current.scrollWidth - containerRef.current.offsetWidth)
+      }
+    }
+
+    // Use ResizeObserver if available, otherwise fallback to window resize
+    let resizeObserver: ResizeObserver | null = null
+    if (typeof ResizeObserver !== "undefined") {
+      resizeObserver = new ResizeObserver(handleResize)
+      if (containerRef.current) {
+        resizeObserver.observe(containerRef.current)
+      }
+    } else {
+      window.addEventListener("resize", handleResize)
+    }
+
+    // Cleanup
+    return () => {
+      if (resizeObserver) {
+        if (containerRef.current) {
+          resizeObserver.unobserve(containerRef.current)
+        }
+        resizeObserver.disconnect()
+      } else {
+        window.removeEventListener("resize", handleResize)
+      }
+    }
+  }, []) // Empty dependency array - only run on mount and unmount
 
   return (
     <section className="py-16 bg-gray-50 overflow-hidden">
