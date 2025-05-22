@@ -1,14 +1,17 @@
 "use client"
 
+import type React from "react"
+
 import { useRef, useEffect, useState } from "react"
 import { ArrowDown } from "lucide-react"
-import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 interface ParticleHeroProps {
   onExploreClick?: () => void
 }
 
 export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
+  const router = useRouter()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const mousePositionRef = useRef({ x: 0, y: 0 })
   const isTouchingRef = useRef(false)
@@ -26,6 +29,22 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
     window.addEventListener("resize", handleResize)
     return () => window.removeEventListener("resize", handleResize)
   }, [])
+
+  // Handle explore click safely
+  const handleExplore = (e: React.MouseEvent) => {
+    e.preventDefault()
+    if (onExploreClick) {
+      onExploreClick()
+    } else {
+      try {
+        router.push("/portfolio")
+      } catch (error) {
+        console.error("Navigation error:", error)
+        // Fallback to traditional navigation
+        window.location.href = "/portfolio"
+      }
+    }
+  }
 
   // Particle animation effect
   useEffect(() => {
@@ -334,19 +353,13 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
 
       {/* Centered call-to-action button */}
       <div className="absolute bottom-[100px] text-center z-10">
-        <Link
-          href="/portfolio"
+        <button
+          onClick={handleExplore}
           className="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-full transition-colors duration-300 flex items-center gap-2 shadow-lg"
-          onClick={(e) => {
-            if (onExploreClick) {
-              e.preventDefault()
-              onExploreClick()
-            }
-          }}
         >
           Explore my work
           <ArrowDown className="w-4 h-4" />
-        </Link>
+        </button>
       </div>
     </div>
   )

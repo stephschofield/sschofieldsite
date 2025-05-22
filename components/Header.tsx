@@ -1,121 +1,82 @@
 "use client"
 
-import { useState, useEffect } from "react"
 import Link from "next/link"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
 import { CommandMenu } from "@/components/CommandMenu"
 import { ProfileSheet } from "@/components/ProfileSheet"
-import { Button } from "@/components/ui/button"
+import { ThemeSwitcher } from "./ThemeSwitcher"
 import { Menu, X } from "lucide-react"
 
 export default function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isScrolled, setIsScrolled] = useState(false)
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10)
-    }
-
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "bg-white/90 backdrop-blur-md shadow-sm" : "bg-transparent"
-      }`}
-    >
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          <Link href="/" className="text-xl font-bold">
-            Stephanie Schofield
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-14 items-center">
+        <div className="mr-4 hidden md:flex">
+          <Link href="/" className="mr-6 flex items-center space-x-2 pl-4">
+            <span className="hidden font-bold sm:inline-block">Stephanie Schofield</span>
           </Link>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-6">
-            <Link href="/portfolio#about" className="text-sm font-medium hover:text-primary">
-              About
-            </Link>
-            <Link href="/portfolio#skills" className="text-sm font-medium hover:text-primary">
-              Skills
-            </Link>
-            <Link href="/portfolio#services" className="text-sm font-medium hover:text-primary">
-              Services
-            </Link>
-            <Link href="/portfolio#portfolio" className="text-sm font-medium hover:text-primary">
+          <nav className="flex items-center space-x-6 text-sm font-medium">
+            <Link href="/portfolio" className="transition-colors hover:text-foreground/80">
               Portfolio
             </Link>
-            <Link href="/portfolio#contact" className="text-sm font-medium hover:text-primary">
+            <Link href="/about" className="transition-colors hover:text-foreground/80">
+              About
+            </Link>
+            <Link href="/contact" className="transition-colors hover:text-foreground/80">
               Contact
             </Link>
           </nav>
+        </div>
 
-          {/* Command Menu and Profile */}
-          <div className="hidden md:flex items-center space-x-2">
+        <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
+          <div className="w-full flex-1 md:w-auto md:flex-none">
             <CommandMenu />
-            <ProfileSheet />
           </div>
+          <ThemeSwitcher />
+          <ProfileSheet />
 
-          {/* Mobile Menu Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-          >
-            {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          <Button variant="ghost" className="md:hidden" size="icon" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            <span className="sr-only">Toggle Menu</span>
           </Button>
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="md:hidden bg-white border-t">
-          <div className="container mx-auto px-4 py-4">
-            <nav className="flex flex-col space-y-4">
-              <Link
-                href="/portfolio#about"
-                className="text-sm font-medium py-2 hover:text-primary"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                About
-              </Link>
-              <Link
-                href="/portfolio#skills"
-                className="text-sm font-medium py-2 hover:text-primary"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Skills
-              </Link>
-              <Link
-                href="/portfolio#services"
-                className="text-sm font-medium py-2 hover:text-primary"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Services
-              </Link>
-              <Link
-                href="/portfolio#portfolio"
-                className="text-sm font-medium py-2 hover:text-primary"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Portfolio
-              </Link>
-              <Link
-                href="/portfolio#contact"
-                className="text-sm font-medium py-2 hover:text-primary"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Contact
-              </Link>
-            </nav>
-            <div className="mt-4 flex items-center">
-              <CommandMenu />
-              <ProfileSheet />
-            </div>
-          </div>
+      {mobileMenuOpen && (
+        <div className="container pb-4 pt-2 md:hidden">
+          <nav className="flex flex-col space-y-3">
+            <Link
+              href="/"
+              className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Home
+            </Link>
+            <Link
+              href="/portfolio"
+              className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Portfolio
+            </Link>
+            <Link
+              href="/about"
+              className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              About
+            </Link>
+            <Link
+              href="/contact"
+              className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Contact
+            </Link>
+          </nav>
         </div>
       )}
     </header>
