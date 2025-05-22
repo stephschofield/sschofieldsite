@@ -326,14 +326,18 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
 
       {/* Centered call-to-action button */}
       <div className="absolute bottom-[100px] text-center z-10">
-        <Link href="/portfolio">
-          <button
-            onClick={onExploreClick}
-            className="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-full transition-colors duration-300 flex items-center gap-2 shadow-lg"
-          >
-            Explore my work
-            <ArrowDown className="w-4 h-4" />
-          </button>
+        <Link
+          href="/portfolio"
+          className="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-full transition-colors duration-300 flex items-center gap-2 shadow-lg"
+          onClick={(e) => {
+            if (onExploreClick) {
+              e.preventDefault()
+              onExploreClick()
+            }
+          }}
+        >
+          Explore my work
+          <ArrowDown className="w-4 h-4" />
         </Link>
       </div>
     </div>
