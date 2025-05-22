@@ -8,27 +8,41 @@ import * as z from "zod"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { CheckCircle } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email({ message: "Please enter a valid email address." }),
-  subject: z.string().min(5, { message: "Subject must be at least 5 characters." }),
+  phoneNumber: z.string().min(10, { message: "Please enter a valid phone number." }),
+  budget: z.string().min(1, { message: "Please enter your budget." }),
   message: z.string().min(10, { message: "Message must be at least 10 characters." }),
+  services: z.array(z.string()).refine((value) => value.length > 0, {
+    message: "Please select at least one service.",
+  }),
 })
+
+const services = [
+  { id: "ui-ux", label: "UI/UX Design" },
+  { id: "web-dev", label: "Web Development" },
+  { id: "mobile-dev", label: "Mobile Development" },
+  { id: "branding", label: "Brand Identity" },
+]
 
 export default function EnhancedContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSubmitted, setIsSubmitted] = useState(false)
+  const { toast } = useToast()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       email: "",
-      subject: "",
+      phoneNumber: "",
+      budget: "",
       message: "",
+      services: [],
     },
   })
 
@@ -38,12 +52,16 @@ export default function EnhancedContactForm() {
     setTimeout(() => {
       console.log(values)
       setIsSubmitting(false)
-      setIsSubmitted(true)
+      form.reset()
+      toast({
+        title: "Message sent!",
+        description: "Thank you for your message. We'll get back to you soon!",
+      })
     }, 2000)
   }
 
   return (
-    <section className="py-20 bg-background">
+    <section className="bg-background py-20">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -53,69 +71,54 @@ export default function EnhancedContactForm() {
         >
           <h2 className="text-3xl font-bold text-foreground sm:text-4xl mb-4">Get in Touch</h2>
           <p className="text-lg text-muted-foreground">
-            Have a project in mind? Let's discuss how we can bring your vision to life.
+            We'd love to hear from you. Fill out the form below and we'll get back to you as soon as possible.
           </p>
         </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="John Doe" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input placeholder="john@example.com" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-        {isSubmitted ? (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-green-50 p-8 rounded-2xl text-center"
-          >
-            <div className="flex justify-center mb-4">
-              <CheckCircle className="w-16 h-16 text-green-500" />
-            </div>
-            <h3 className="text-2xl font-semibold mb-2 text-green-800">Message Sent!</h3>
-            <p className="text-green-700 mb-6">Thank you for reaching out. I'll get back to you as soon as possible.</p>
-            <Button onClick={() => setIsSubmitted(false)} variant="outline">
-              Send Another Message
-            </Button>
-          </motion.div>
-        ) : (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="John Doe" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email</FormLabel>
-                        <FormControl>
-                          <Input placeholder="john@example.com" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
-                  name="subject"
+                  name="phoneNumber"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Subject</FormLabel>
+                      <FormLabel>Phone Number</FormLabel>
                       <FormControl>
-                        <Input placeholder="Project Inquiry" {...field} />
+                        <Input placeholder="+1 (555) 000-0000" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -123,24 +126,75 @@ export default function EnhancedContactForm() {
                 />
                 <FormField
                   control={form.control}
-                  name="message"
+                  name="budget"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Message</FormLabel>
+                      <FormLabel>Budget</FormLabel>
                       <FormControl>
-                        <Textarea placeholder="Tell me about your project..." className="min-h-[150px]" {...field} />
+                        <Input placeholder="$1,000 - $5,000" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="w-full" disabled={isSubmitting}>
-                  {isSubmitting ? "Sending..." : "Send Message"}
-                </Button>
-              </form>
-            </Form>
-          </motion.div>
-        )}
+              </div>
+
+              <FormField
+                control={form.control}
+                name="services"
+                render={() => (
+                  <FormItem>
+                    <div className="mb-4">
+                      <FormLabel>Services Needed</FormLabel>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      {services.map((service) => (
+                        <div key={service.id} className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            id={service.id}
+                            value={service.id}
+                            onChange={(e) => {
+                              const currentServices = form.getValues("services")
+                              if (e.target.checked) {
+                                form.setValue("services", [...currentServices, service.id])
+                              } else {
+                                form.setValue(
+                                  "services",
+                                  currentServices.filter((id) => id !== service.id),
+                                )
+                              }
+                            }}
+                            className="rounded border-gray-300"
+                          />
+                          <Label htmlFor={service.id}>{service.label}</Label>
+                        </div>
+                      ))}
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="message"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Message</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Tell us about your project..." className="min-h-[120px]" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
+                {isSubmitting ? "Sending..." : "Send Message"}
+              </Button>
+            </form>
+          </Form>
+        </motion.div>
       </div>
     </section>
   )

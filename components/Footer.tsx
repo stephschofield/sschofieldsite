@@ -1,61 +1,30 @@
-"use client"
 import Link from "next/link"
 
 export default function Footer() {
   return (
-    <footer className="bg-background py-12 border-t">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="md:col-span-2">
-            <h3 className="text-lg font-semibold mb-4">Stephanie Schofield</h3>
-            <p className="text-muted-foreground max-w-md">
-              Creating minimal, elegant designs that blend form and function seamlessly.
-            </p>
-            <div className="mt-4 flex space-x-4">
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                Twitter
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                Instagram
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                LinkedIn
-              </a>
+    <footer className="bg-background border-t border-border">
+      <div className="mx-auto max-w-7xl overflow-hidden px-6 py-20 sm:py-24 lg:px-8">
+        <nav className="-mb-6 columns-2 sm:flex sm:justify-center sm:space-x-12" aria-label="Footer">
+          {[
+            { name: "Home", href: "/" },
+            { name: "About", href: "#about" },
+            { name: "Services", href: "#services" },
+            { name: "Projects", href: "/projects" },
+            { name: "Contact", href: "#contact" },
+            { name: "Feedback", href: "/feedback" },
+            { name: "Privacy", href: "#" },
+            { name: "Terms", href: "#" },
+          ].map((item) => (
+            <div key={item.name} className="pb-6">
+              <Link href={item.href} className="text-sm leading-6 text-muted-foreground hover:text-foreground">
+                {item.name}
+              </Link>
             </div>
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Links</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/portfolio" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Portfolio
-                </Link>
-              </li>
-              <li>
-                <Link href="/about" className="text-muted-foreground hover:text-foreground transition-colors">
-                  About
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Contact
-                </Link>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Contact</h3>
-            <ul className="space-y-2">
-              <li className="text-muted-foreground">hello@stephanieschofield.com</li>
-              <li className="text-muted-foreground">Sydney, Australia</li>
-            </ul>
-          </div>
-        </div>
-        <div className="mt-12 pt-8 border-t border-border">
-          <p className="text-center text-muted-foreground text-sm">
-            © {new Date().getFullYear()} Stephanie Schofield. All rights reserved.
-          </p>
-        </div>
+          ))}
+        </nav>
+        <p className="mt-10 text-center text-sm leading-5 text-muted-foreground">
+          &copy; {new Date().getFullYear()} Stephanie Schofield. All rights reserved.
+        </p>
       </div>
     </footer>
   )

@@ -1,11 +1,11 @@
 "use client"
+
+import { useRef } from "react"
 import Header from "@/components/Header"
-import Footer from "@/components/Footer"
 import AboutUs from "@/components/AboutUs"
-import ServicesSection from "@/components/ServicesSection"
 import PortfolioGrid from "@/components/PortfolioGrid"
-import TabbedTestimonials from "@/components/TabbedTestimonials"
 import EnhancedContactForm from "@/components/EnhancedContactForm"
+import Footer from "@/components/Footer"
 import Marquee from "@/components/Marquee"
 import NewsletterSubscribe from "@/components/NewsletterSubscribe"
 import Timeline from "@/components/Timeline"
@@ -14,28 +14,36 @@ import LottieSection from "@/components/LottieSection"
 import Announcement from "@/components/Announcement"
 import SkillsSection from "@/components/SkillsSection"
 import TabbedFAQ from "@/components/TabbedFAQ"
-import FeatureCarousel from "@/components/FeatureCarousel"
+import Testimonials from "@/components/Testimonials"
+import Services from "@/components/Services"
+import ProductShowcase from "@/components/ProductShowcase"
 import WearYourStory from "@/components/WearYourStory"
 
-export default function PortfolioPage() {
+export default function Portfolio() {
+  const aboutRef = useRef<HTMLDivElement>(null)
+  const servicesRef = useRef<HTMLDivElement>(null)
+  const portfolioRef = useRef<HTMLDivElement>(null)
+  const contactRef = useRef<HTMLDivElement>(null)
+  const skillsRef = useRef<HTMLDivElement>(null)
+
   return (
     <>
       <Header />
       <Announcement />
 
       {/* About Section */}
-      <div id="about">
+      <div ref={aboutRef} id="about">
         <AboutUs />
       </div>
 
       {/* Skills Section */}
-      <div id="skills">
+      <div ref={skillsRef} id="skills">
         <SkillsSection />
       </div>
 
       {/* Services Section */}
-      <div id="services">
-        <ServicesSection />
+      <div ref={servicesRef} id="services">
+        <Services />
       </div>
 
       {/* Lottie Animation Section */}
@@ -44,22 +52,20 @@ export default function PortfolioPage() {
       {/* Marquee Section */}
       <Marquee />
 
+      <ProductShowcase />
+
       {/* Portfolio Section */}
-      <div id="portfolio">
+      <div ref={portfolioRef} id="portfolio">
         <PortfolioGrid />
       </div>
 
-      {/* Wear Your Story Section */}
-      <WearYourStory />
-
-      {/* Feature Carousel */}
-      <FeatureCarousel />
-
       {/* Testimonials Section */}
-      <TabbedTestimonials />
+      <Testimonials />
 
       {/* Timeline Section */}
       <Timeline />
+
+      <WearYourStory />
 
       {/* FAQ Section */}
       <TabbedFAQ />
@@ -68,7 +74,7 @@ export default function PortfolioPage() {
       <NewsletterSubscribe />
 
       {/* Contact Section */}
-      <div id="contact">
+      <div id="contact" ref={contactRef}>
         <EnhancedContactForm />
       </div>
 

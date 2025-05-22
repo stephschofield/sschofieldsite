@@ -1,79 +1,90 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useSearchParams } from "next/navigation"
-import { Check, AlertTriangle } from "lucide-react"
+import { useState } from "react"
+import { motion } from "framer-motion"
+import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
+import { Check, ArrowRight } from "lucide-react"
 
 export default function VerifyPage() {
-  const searchParams = useSearchParams()
-  const token = searchParams?.get("token") || ""
-  const [status, setStatus] = useState<"loading" | "success" | "error">("loading")
+  const [value, setValue] = useState("")
+  const [isVerified, setIsVerified] = useState(false)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const router = useRouter()
 
-  useEffect(() => {
-    // Simulate verification process
-    const verifyToken = async () => {
-      try {
-        // In a real app, you would verify the token with your backend
-        await new Promise((resolve) => setTimeout(resolve, 1500))
-
-        // For demo purposes, we'll consider any token valid
-        if (token) {
-          setStatus("success")
-        } else {
-          setStatus("error")
-        }
-      } catch (error) {
-        setStatus("error")
-      }
+  const handleVerify = () => {
+    if (value.length === 6) {
+      setIsVerified(true)
+      setIsDialogOpen(true)
     }
+  }
 
-    verifyToken()
-  }, [token])
+  const handleContinue = () => {
+    setIsDialogOpen(false)
+    router.push("/")
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
-        <h1 className="text-2xl font-bold text-center mb-6">Email Verification</h1>
+    <div className="container mx-auto py-12">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="max-w-md mx-auto"
+      >
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold mb-2">Verify Your Email</h1>
+          <p className="text-muted-foreground">
+            We've sent a verification code to your email. Please enter the 6-digit code below.
+          </p>
+        </div>
 
-        {status === "loading" && (
-          <div className="text-center">
-            <div className="w-16 h-16 border-4 border-t-blue-600 border-gray-200 rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-gray-600">Verifying your email address...</p>
+        <div className="space-y-8">
+          <div className="flex justify-center">
+            <InputOTP
+              maxLength={6}
+              value={value}
+              onChange={(value) => setValue(value)}
+              render={({ slots }) => (
+                <InputOTPGroup>
+                  {slots.map((slot, index) => (
+                    <InputOTPSlot key={index} {...slot} index={index} />
+                  ))}
+                </InputOTPGroup>
+              )}
+            />
           </div>
-        )}
 
-        {status === "success" && (
           <div className="text-center">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Check className="w-8 h-8 text-green-600" />
+            <Button onClick={handleVerify} disabled={value.length !== 6} className="w-full">
+              Verify Email
+            </Button>
+            <p className="mt-4 text-sm text-muted-foreground">
+              Didn't receive a code? <button className="text-primary hover:underline">Resend Code</button>
+            </p>
+          </div>
+        </div>
+      </motion.div>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Email Verified Successfully!</DialogTitle>
+            <DialogDescription>Your email has been verified. You can now continue to your account.</DialogDescription>
+          </DialogHeader>
+          <div className="flex items-center justify-center p-4">
+            <div className="rounded-full bg-green-100 p-3">
+              <Check className="h-8 w-8 text-green-600" />
             </div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">Verification Successful</h2>
-            <p className="text-gray-600 mb-6">Your email has been successfully verified.</p>
-            <a
-              href="/"
-              className="inline-block bg-blue-600 text-white px-6 py-2 rounded-md font-medium hover:bg-blue-700 transition-colors"
-            >
-              Return to Home
-            </a>
           </div>
-        )}
-
-        {status === "error" && (
-          <div className="text-center">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <AlertTriangle className="w-8 h-8 text-red-600" />
-            </div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">Verification Failed</h2>
-            <p className="text-gray-600 mb-6">The verification link is invalid or has expired.</p>
-            <a
-              href="/"
-              className="inline-block bg-blue-600 text-white px-6 py-2 rounded-md font-medium hover:bg-blue-700 transition-colors"
-            >
-              Return to Home
-            </a>
-          </div>
-        )}
-      </div>
+          <Button onClick={handleContinue} className="w-full">
+            Continue to Dashboard
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

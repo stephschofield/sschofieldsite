@@ -2,9 +2,10 @@
 
 import { useRef, useEffect, useState } from "react"
 import { ArrowDown } from "lucide-react"
+import Link from "next/link"
 
 interface ParticleHeroProps {
-  onExploreClick: () => void
+  onExploreClick?: () => void
 }
 
 export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
@@ -13,21 +14,20 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
   const isTouchingRef = useRef(false)
   const [isMobile, setIsMobile] = useState(false)
 
+  // Set isMobile state only once on mount
   useEffect(() => {
+    const checkMobile = () => window.innerWidth < 768
+    setIsMobile(checkMobile())
+
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768)
+      setIsMobile(checkMobile())
     }
 
-    // Set initial value
-    handleResize()
-
-    // Add event listener
     window.addEventListener("resize", handleResize)
-
-    // Cleanup
     return () => window.removeEventListener("resize", handleResize)
   }, [])
 
+  // Particle animation effect
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -133,6 +133,11 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
         "#E53935", // Red
         "#5E35B1", // Purple
         "#FB8C00", // Orange
+        "#00ACC1", // Cyan
+        "#8E24AA", // Deep Purple
+        "#FFB300", // Amber
+        "#F4511E", // Deep Orange
+        "#546E7A", // Blue Grey
       ]
       const randomColor = colors[Math.floor(Math.random() * colors.length)]
 
@@ -150,9 +155,9 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
 
     function createInitialParticles(scale: number) {
       // Reduced particle density for better performance
-      const particlesPerPixel = 0.8 // Target particles per text pixel
+      const particlesPerPixel = 1.0 // Target particles per text pixel
       const targetCount = Math.floor(textPixels.length * particlesPerPixel)
-      const maxParticles = 40000 // Cap for performance reasons
+      const maxParticles = 40000 // Reduced max cap for performance reasons
       const particleCount = Math.min(targetCount, maxParticles)
 
       console.log(`Creating particles for ${textPixels.length} text pixels, target: ${particleCount}`)
@@ -186,7 +191,7 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
 
     let animationFrameId: number
 
-    function animate() {
+    function animate(scale: number) {
       if (!ctx || !canvas) return
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       ctx.fillStyle = "#f8f9fa" // Light gray background
@@ -240,21 +245,21 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
       }
 
       // Maintain high particle count
-      if (particles.length < textPixels.length * 0.7) {
+      if (particles.length < textPixels.length * 1.0) {
         // Target slightly below max to avoid constant regeneration
-        const batchSize = Math.min(50, textPixels.length - particles.length)
+        const batchSize = Math.min(20, textPixels.length - particles.length)
         for (let i = 0; i < batchSize; i++) {
           const newParticle = createParticle(scale)
           if (newParticle) particles.push(newParticle)
         }
       }
 
-      animationFrameId = requestAnimationFrame(animate)
+      animationFrameId = requestAnimationFrame(() => animate(scale))
     }
 
     const scale = createTextImage()
     createInitialParticles(scale)
-    animate()
+    animate(scale)
 
     const handleResize = () => {
       updateCanvasSize()
@@ -309,25 +314,27 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
       canvas.removeEventListener("touchend", handleTouchEnd)
       cancelAnimationFrame(animationFrameId)
     }
-  }, [isMobile])
+  }, [isMobile]) // Only depend on isMobile
 
   return (
-    <div className="relative w-full h-dvh flex flex-col items-center justify-center bg-gray-50">
+    <div className="relative w-full h-screen flex flex-col items-center justify-center bg-gray-50">
       <canvas
         ref={canvasRef}
         className="w-full h-full absolute top-0 left-0 touch-none"
         aria-label="Interactive particle effect with 'Welcome to my office' text"
       />
+
+      {/* Centered call-to-action button */}
       <div className="absolute bottom-[100px] text-center z-10">
-        <p className="font-mono text-gray-700 text-xs sm:text-base md:text-sm">
+        <Link href="/portfolio">
           <button
             onClick={onExploreClick}
-            className="text-blue-600 hover:text-blue-800 transition-colors duration-300 flex items-center gap-2"
+            className="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-full transition-colors duration-300 flex items-center gap-2 shadow-lg"
           >
             Explore my work
             <ArrowDown className="w-4 h-4" />
           </button>
-        </p>
+        </Link>
       </div>
     </div>
   )

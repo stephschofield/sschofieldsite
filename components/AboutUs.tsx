@@ -1,42 +1,114 @@
 "use client"
 
 import { motion } from "framer-motion"
+import ProjectCard from "./ProjectCard"
+import SocialLinks from "./SocialLinks"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
 export default function AboutUs() {
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-900">
-      <div className="container mx-auto">
-        <motion.h2
-          className="text-5xl font-black mb-8 text-center text-white"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          About Us
-        </motion.h2>
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          <motion.div initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }}>
-            <h3 className="text-3xl font-bold mb-4 text-white">We are Creative Innovators</h3>
-            <p className="text-gray-300 mb-6">
-              At Flowers & Saints, we blend cutting-edge technology with artistic vision to create digital experiences
-              that captivate and inspire. Our team of passionate designers, developers, and strategists work tirelessly
-              to push the boundaries of what's possible in the digital realm.
-            </p>
-            <p className="text-gray-300">
-              With a focus on innovation and user-centric design, we've helped countless brands transform their digital
-              presence and connect with their audience in meaningful ways.
-            </p>
-          </motion.div>
+    <section className="min-h-screen bg-white py-24 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto">
+        <div className="space-y-16">
+          {/* Bio Section */}
+          <div className="space-y-8">
+            <motion.h1
+              className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              Stephanie Schofield
+            </motion.h1>
+            <motion.p
+              className="text-xl text-gray-600 leading-relaxed"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              I'm a product designer and developer with over 8 years of experience creating digital products that solve
+              real problems. My approach combines minimalist design principles with cutting-edge technology to create
+              intuitive, beautiful experiences.
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
+              <SocialLinks />
+            </motion.div>
+          </div>
+
+          {/* Projects Section */}
           <motion.div
-            className="relative h-96"
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            className="space-y-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg transform rotate-3"></div>
-            <div className="absolute inset-0 bg-gray-800 rounded-lg transform -rotate-3 flex items-center justify-center">
-              <p className="text-2xl font-bold text-white">Creative Team at Work</p>
+            <h2 className="text-2xl font-semibold text-gray-900">My Products</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <ProjectCard
+                title="Flowspace"
+                description="A productivity tool that helps teams organize their workflow with a visual, intuitive interface."
+                image="/productivity-app-interface.png"
+                link="https://flowspace.example.com"
+              />
+              <ProjectCard
+                title="Mindfull"
+                description="A meditation app designed to help busy professionals find moments of calm throughout their day."
+                image="/meditation-app-interface.png"
+                link="https://mindfull.example.com"
+                size="wide"
+              />
+              <ProjectCard
+                title="Palette"
+                description="A color management system for designers that simplifies the process of creating cohesive color schemes."
+                image="/color-palette-tool.png"
+                link="https://palette.example.com"
+              />
+              <ProjectCard
+                title="Typeform"
+                description="A typography exploration tool that helps designers find the perfect font combinations for their projects."
+                image="/typography-tool-interface.png"
+                link="https://typeform.example.com"
+                size="wide"
+              />
             </div>
+          </motion.div>
+
+          {/* FAQ Section with Accordion */}
+          <motion.div
+            className="space-y-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.8 }}
+          >
+            <h2 className="text-2xl font-semibold text-gray-900">Frequently Asked Questions</h2>
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="item-1">
+                <AccordionTrigger>What services do you offer?</AccordionTrigger>
+                <AccordionContent>
+                  I specialize in UI/UX design, web development, and digital product strategy. My services include user
+                  research, wireframing, prototyping, visual design, and front-end development.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-2">
+                <AccordionTrigger>What is your design process?</AccordionTrigger>
+                <AccordionContent>
+                  My design process begins with understanding the problem through research and stakeholder interviews.
+                  Then I move to ideation, wireframing, and prototyping. After iterative feedback and refinement, I
+                  finalize the designs and work closely with developers for implementation.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-3">
+                <AccordionTrigger>How do you approach new projects?</AccordionTrigger>
+                <AccordionContent>
+                  I approach each project with a focus on the end user's needs and business goals. I believe in
+                  collaborative design processes and maintaining open communication throughout the project lifecycle.
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </motion.div>
         </div>
       </div>
