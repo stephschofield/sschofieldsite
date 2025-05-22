@@ -18,10 +18,21 @@ import Testimonials from "@/components/Testimonials"
 import Services from "@/components/Services"
 import ProductShowcase from "@/components/ProductShowcase"
 import WearYourStory from "@/components/WearYourStory"
+import { ErrorBoundary } from "react-error-boundary"
 
 // Create a loading state component
 function LoadingState() {
   return <div className="min-h-screen flex items-center justify-center">Loading...</div>
+}
+
+function ErrorFallback({ error, reset }: { error: Error; reset: () => void }) {
+  return (
+    <div role="alert">
+      <p>Something went wrong:</p>
+      <pre style={{ color: "red" }}>{error.message}</pre>
+      <button onClick={reset}>Try again</button>
+    </div>
+  )
 }
 
 export default function Portfolio() {
@@ -41,62 +52,70 @@ export default function Portfolio() {
   }
 
   return (
-    <>
-      <Header />
-      <Announcement />
+    <ErrorBoundary
+      FallbackComponent={ErrorFallback}
+      onReset={() => {
+        // Reset the state of the component
+        console.log("Resetting the component")
+      }}
+    >
+      <>
+        <Header />
+        <Announcement />
 
-      {/* About Section */}
-      <div ref={aboutRef} id="about">
-        <AboutUs />
-      </div>
+        {/* About Section */}
+        <div ref={aboutRef} id="about">
+          <AboutUs />
+        </div>
 
-      {/* Skills Section */}
-      <div ref={skillsRef} id="skills">
-        <SkillsSection />
-      </div>
+        {/* Skills Section */}
+        <div ref={skillsRef} id="skills">
+          <SkillsSection />
+        </div>
 
-      {/* Services Section */}
-      <div ref={servicesRef} id="services">
-        <Services />
-      </div>
+        {/* Services Section */}
+        <div ref={servicesRef} id="services">
+          <Services />
+        </div>
 
-      {/* Lottie Animation Section */}
-      <LottieSection />
+        {/* Lottie Animation Section */}
+        <LottieSection />
 
-      {/* Marquee Section */}
-      <Marquee />
+        {/* Marquee Section */}
+        <Marquee />
 
-      <ProductShowcase />
+        <ProductShowcase />
 
-      {/* Portfolio Section */}
-      <div ref={portfolioRef} id="portfolio">
-        <PortfolioGrid />
-      </div>
+        {/* Portfolio Section */}
+        <div ref={portfolioRef} id="portfolio">
+          <PortfolioGrid />
+        </div>
 
-      {/* Testimonials Section */}
-      <Testimonials />
+        {/* Testimonials Section */}
+        <Testimonials />
 
-      {/* Timeline Section */}
-      <Timeline />
+        {/* Timeline Section */}
+        <Timeline />
 
-      <WearYourStory />
+        <WearYourStory />
 
-      {/* FAQ Section */}
-      <TabbedFAQ />
+        {/* FAQ Section */}
+        <TabbedFAQ />
 
-      {/* Newsletter Section */}
-      <NewsletterSubscribe />
+        {/* Newsletter Section */}
+        <NewsletterSubscribe />
 
-      {/* Contact Section */}
-      <div id="contact" ref={contactRef}>
-        <EnhancedContactForm />
-      </div>
+        {/* Contact Section */}
+        <div id="contact" ref={contactRef}>
+          <EnhancedContactForm />
+        </div>
 
-      {/* Footer */}
-      <Footer />
+        {/* Footer */}
+        <Footer />
 
-      {/* Floating Action Button */}
-      <FloatingActionButton />
-    </>
+        {/* Floating Action Button */}
+        <FloatingActionButton />
+      </>
+    </ErrorBoundary>
   )
 }

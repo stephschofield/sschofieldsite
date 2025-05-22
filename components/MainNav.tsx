@@ -26,8 +26,12 @@ export function MainNav() {
       document.querySelector(href)?.scrollIntoView({ behavior: "smooth" })
     } else {
       // For page navigation
-      // Try both methods for maximum compatibility
-      router.push(href)
+      try {
+        router.push(href)
+      } catch (error: any) {
+        console.error("Navigation error:", error)
+        window.location.href = href
+      }
 
       // Fallback direct navigation after a short delay if router.push doesn't work
       setTimeout(() => {

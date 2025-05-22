@@ -39,7 +39,12 @@ export default function FullScreenMenu({ isOpen, onClose }: FullScreenMenuProps)
       document.querySelector(href)?.scrollIntoView({ behavior: "smooth" })
     } else {
       // For page navigation
-      router.push(href)
+      try {
+        router.push(href)
+      } catch (error: any) {
+        console.error("Navigation error:", error)
+        window.location.href = href
+      }
 
       // Fallback direct navigation after a short delay if router.push doesn't work
       setTimeout(() => {
