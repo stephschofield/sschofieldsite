@@ -1,8 +1,10 @@
 "use client"
 
+import type React from "react"
+
 import { useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { X } from "lucide-react"
 
 interface FullScreenMenuProps {
@@ -11,6 +13,8 @@ interface FullScreenMenuProps {
 }
 
 export default function FullScreenMenu({ isOpen, onClose }: FullScreenMenuProps) {
+  const router = useRouter()
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden"
@@ -22,6 +26,12 @@ export default function FullScreenMenu({ isOpen, onClose }: FullScreenMenuProps)
       document.body.style.overflow = ""
     }
   }, [isOpen])
+
+  const handleNavigation = (path: string) => (e: React.MouseEvent) => {
+    e.preventDefault()
+    onClose()
+    router.push(path)
+  }
 
   const menuVariants = {
     closed: {
@@ -86,13 +96,21 @@ export default function FullScreenMenu({ isOpen, onClose }: FullScreenMenuProps)
               <nav className="flex flex-col items-center space-y-8">
                 {menuItems.map((item, i) => (
                   <motion.div key={item.title} custom={i} variants={itemVariants}>
-                    <Link
+                    <a
                       href={item.href}
                       className="text-4xl font-bold hover:text-primary transition-colors"
-                      onClick={onClose}
+                      onClick={
+                        item.href.startsWith("#")
+                          ? (e) => {
+                              e.preventDefault()
+                              onClose()
+                              document.querySelector(item.href)?.scrollIntoView({ behavior: "smooth" })
+                            }
+                          : handleNavigation(item.href)
+                      }
                     >
                       {item.title}
-                    </Link>
+                    </a>
                   </motion.div>
                 ))}
               </nav>
