@@ -19,13 +19,21 @@ export function MainNav() {
 
   const handleNavigation = (href: string) => (e: React.MouseEvent) => {
     e.preventDefault()
+    console.log(`Navigating to: ${href}`) // Debug log
 
     if (href.startsWith("#")) {
       // For hash links (like #contact)
       document.querySelector(href)?.scrollIntoView({ behavior: "smooth" })
     } else {
       // For page navigation
+      // Try both methods for maximum compatibility
       router.push(href)
+
+      // Fallback direct navigation after a short delay if router.push doesn't work
+      setTimeout(() => {
+        if (pathname === href) return // Don't redirect if we're already there
+        window.location.href = href
+      }, 100)
     }
   }
 

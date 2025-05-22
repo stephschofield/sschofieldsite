@@ -1,35 +1,41 @@
-"use client"
-
 import Image from "next/image"
-import { motion } from "framer-motion"
+import Link from "next/link"
+import { Card, CardContent, CardFooter } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 
 interface ProjectCardProps {
   title: string
   description: string
-  image: string
-  size: "square" | "wide"
+  imageSrc: string
+  tags: string[]
+  href: string
 }
 
-export default function ProjectCard({ title, description, image, size }: ProjectCardProps) {
+export default function ProjectCard({ title, description, imageSrc, tags, href }: ProjectCardProps) {
   return (
-    <motion.div
-      className={`relative overflow-hidden rounded-2xl shadow-lg bg-white ${
-        size === "wide" ? "aspect-[2/1]" : "aspect-square"
-      }`}
-      whileHover={{ scale: 1.05 }}
-      transition={{ duration: 0.3 }}
-    >
-      <Image src={image || "/placeholder.svg"} alt={title} fill className="object-cover" />
-      <motion.div
-        className="absolute inset-0 bg-black bg-opacity-60 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-6"
-        initial={{ opacity: 0 }}
-        whileHover={{ opacity: 1 }}
-      >
-        <div className="text-center">
-          <h3 className="text-2xl font-bold text-white mb-2">{title}</h3>
-          <p className="text-gray-200">{description}</p>
+    <Link href={href}>
+      <Card className="overflow-hidden h-full transition-all duration-300 hover:shadow-lg">
+        <div className="relative h-48 w-full">
+          <Image
+            src={imageSrc || "/placeholder.svg"}
+            alt={title}
+            fill
+            style={{ objectFit: "cover" }}
+            className="transition-transform duration-300 hover:scale-105"
+          />
         </div>
-      </motion.div>
-    </motion.div>
+        <CardContent className="p-6">
+          <h3 className="text-xl font-bold mb-2">{title}</h3>
+          <p className="text-muted-foreground mb-4">{description}</p>
+        </CardContent>
+        <CardFooter className="px-6 pb-6 pt-0 flex flex-wrap gap-2">
+          {tags.map((tag) => (
+            <Badge key={tag} variant="secondary">
+              {tag}
+            </Badge>
+          ))}
+        </CardFooter>
+      </Card>
+    </Link>
   )
 }

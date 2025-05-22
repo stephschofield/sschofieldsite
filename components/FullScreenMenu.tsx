@@ -5,6 +5,7 @@ import type React from "react"
 import { useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useRouter } from "next/navigation"
+import { usePathname } from "next/navigation"
 import { X } from "lucide-react"
 
 interface FullScreenMenuProps {
@@ -14,6 +15,7 @@ interface FullScreenMenuProps {
 
 export default function FullScreenMenu({ isOpen, onClose }: FullScreenMenuProps) {
   const router = useRouter()
+  const pathname = usePathname()
 
   useEffect(() => {
     if (isOpen) {
@@ -30,6 +32,7 @@ export default function FullScreenMenu({ isOpen, onClose }: FullScreenMenuProps)
   const handleNavigation = (href: string) => (e: React.MouseEvent) => {
     e.preventDefault()
     onClose()
+    console.log(`Mobile menu navigating to: ${href}`) // Debug log
 
     if (href.startsWith("#")) {
       // For hash links (like #contact)
@@ -37,6 +40,12 @@ export default function FullScreenMenu({ isOpen, onClose }: FullScreenMenuProps)
     } else {
       // For page navigation
       router.push(href)
+
+      // Fallback direct navigation after a short delay if router.push doesn't work
+      setTimeout(() => {
+        if (pathname === href) return // Don't redirect if we're already there
+        window.location.href = href
+      }, 100)
     }
   }
 
