@@ -1,18 +1,33 @@
 "use client"
 
-import { useState } from "react"
-import { motion } from "framer-motion"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Check, ArrowRight } from "lucide-react"
+import dynamic from "next/dynamic"
+
+// Dynamically import motion component with SSR disabled
+const MotionDiv = dynamic(
+  () =>
+    import("framer-motion").then((mod) => {
+      const { motion } = mod
+      return motion.div
+    }),
+  { ssr: false },
+)
 
 export default function VerifyPage() {
   const [value, setValue] = useState("")
   const [isVerified, setIsVerified] = useState(false)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
   const router = useRouter()
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   const handleVerify = () => {
     if (value.length === 6) {
@@ -26,9 +41,40 @@ export default function VerifyPage() {
     router.push("/")
   }
 
+  // Prevent hydration errors by not rendering until client-side
+  if (!isMounted) {
+    return (
+      <div className="container mx-auto py-12">
+        <div className="max-w-md mx-auto">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold mb-2">Verify Your Email</h1>
+            <p className="text-muted-foreground">
+              We've sent a verification code to your email. Please enter the 6-digit code below.
+            </p>
+          </div>
+          <div className="space-y-8">
+            <div className="flex justify-center">
+              {/* Static placeholder for OTP input */}
+              <div className="flex gap-2">
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="w-10 h-12 border rounded flex items-center justify-center" />
+                ))}
+              </div>
+            </div>
+            <div className="text-center">
+              <Button disabled className="w-full">
+                Verify Email
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="container mx-auto py-12">
-      <motion.div
+      <MotionDiv
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -49,9 +95,7 @@ export default function VerifyPage() {
               onChange={(value) => setValue(value)}
               render={({ slots }) => (
                 <InputOTPGroup>
-                  {slots.map((slot, index) => (
-                    <InputOTPSlot key={index} {...slot} index={index} />
-                  ))}
+                  {slots && slots.map((slot, index) => <InputOTPSlot key={index} {...slot} index={index} />)}
                 </InputOTPGroup>
               )}
             />
@@ -66,7 +110,7 @@ export default function VerifyPage() {
             </p>
           </div>
         </div>
-      </motion.div>
+      </MotionDiv>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent>
