@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useTheme } from "next-themes"
 import {
   type ThemeMode,
@@ -48,103 +48,114 @@ export function useThemeUtils() {
   }, [setTheme])
 
   // Apply a predefined theme
-  const applyThemeColor = (themeColor: ThemeColor) => {
-    if (!mounted) return
+  const applyThemeColor = useCallback(
+    (themeColor: ThemeColor) => {
+      if (!mounted) return
 
-    const themeConfig = themePresets[themeColor]
-    if (!themeConfig) return
+      const themeConfig = themePresets[themeColor]
+      if (!themeConfig) return
 
-    // Update the theme mode if it's not system
-    if (themeConfig.mode !== "system") {
-      setTheme(themeConfig.mode)
-    }
+      // Update the theme mode if it's not system
+      if (themeConfig.mode !== "system") {
+        setTheme(themeConfig.mode)
+      }
 
-    // Apply the theme colors
-    applyTheme(themeConfig)
-    setActiveThemeColor(themeColor)
+      // Apply the theme colors
+      applyTheme(themeConfig)
+      setActiveThemeColor(themeColor)
 
-    return themeConfig
-  }
+      return themeConfig
+    },
+    [mounted, setTheme],
+  )
 
   // Apply a custom theme
-  const applyCustomTheme = (colors: { light: Record<string, HSLColor>; dark: Record<string, HSLColor> }) => {
-    if (!mounted) return
+  const applyCustomTheme = useCallback(
+    (colors: { light: Record<string, HSLColor>; dark: Record<string, HSLColor> }) => {
+      if (!mounted) return
 
-    const customTheme: ThemeConfig = {
-      ...themePresets.custom,
-      colors,
-    }
+      const customTheme: ThemeConfig = {
+        ...themePresets.custom,
+        colors,
+      }
 
-    applyTheme(customTheme)
-    setActiveThemeColor("custom")
-    setCustomColors(colors)
+      applyTheme(customTheme)
+      setActiveThemeColor("custom")
+      setCustomColors(colors)
 
-    return customTheme
-  }
+      return customTheme
+    },
+    [mounted],
+  )
 
   // Update a specific color in the current theme
-  const updateThemeColor = (
-    colorName: string,
-    color: HSLColor,
-    mode: ThemeMode = (resolvedTheme as ThemeMode) || "light",
-  ) => {
-    if (!mounted) return
+  const updateThemeColor = useCallback(
+    (colorName: string, color: HSLColor, mode: ThemeMode = (resolvedTheme as ThemeMode) || "light") => {
+      if (!mounted) return
 
-    // Create a copy of the current theme
-    const currentTheme =
-      activeThemeColor === "custom"
-        ? { ...themePresets.custom, colors: customColors }
-        : { ...themePresets[activeThemeColor] }
+      // Create a copy of the current theme
+      const currentTheme =
+        activeThemeColor === "custom"
+          ? { ...themePresets.custom, colors: customColors }
+          : { ...themePresets[activeThemeColor] }
 
-    // Update the color
-    const newColors = {
-      ...currentTheme.colors,
-      [mode]: {
-        ...currentTheme.colors[mode],
-        [colorName]: color,
-      },
-    }
+      // Update the color
+      const newColors = {
+        ...currentTheme.colors,
+        [mode]: {
+          ...currentTheme.colors[mode],
+          [colorName]: color,
+        },
+      }
 
-    // Apply the updated theme
-    const updatedTheme: ThemeConfig = {
-      ...currentTheme,
-      color: "custom", // Mark as custom when a color is changed
-      colors: newColors,
-    }
+      // Apply the updated theme
+      const updatedTheme: ThemeConfig = {
+        ...currentTheme,
+        color: "custom", // Mark as custom when a color is changed
+        colors: newColors,
+      }
 
-    applyTheme(updatedTheme)
-    setActiveThemeColor("custom")
-    setCustomColors(newColors)
+      applyTheme(updatedTheme)
+      setActiveThemeColor("custom")
+      setCustomColors(newColors)
 
-    return updatedTheme
-  }
+      return updatedTheme
+    },
+    [mounted, activeThemeColor, customColors, resolvedTheme],
+  )
 
   // Reset to default theme
-  const resetTheme = () => {
+  const resetTheme = useCallback(() => {
     if (!mounted) return
 
     // Apply the default theme
     applyThemeColor("default")
     setTheme("system")
-  }
+  }, [mounted, applyThemeColor, setTheme])
 
   // Get CSS variable value
-  const getCssVar = (name: string): HSLColor | null => {
-    if (typeof window === "undefined" || !mounted) return null
+  const getCssVar = useCallback(
+    (name: string): HSLColor | null => {
+      if (typeof window === "undefined" || !mounted) return null
 
-    const value = getComputedStyle(document.documentElement).getPropertyValue(`--${name}`).trim()
+      const value = getComputedStyle(document.documentElement).getPropertyValue(`--${name}`).trim()
 
-    if (!value) return null
+      if (!value) return null
 
-    return parseHSL(value)
-  }
+      return parseHSL(value)
+    },
+    [mounted],
+  )
 
   // Set CSS variable value
-  const setCssVar = (name: string, value: HSLColor): void => {
-    if (typeof window === "undefined" || !mounted) return
+  const setCssVar = useCallback(
+    (name: string, value: HSLColor): void => {
+      if (typeof window === "undefined" || !mounted) return
 
-    document.documentElement.style.setProperty(`--${name}`, hslToString(value))
-  }
+      document.documentElement.style.setProperty(`--${name}`, hslToString(value))
+    },
+    [mounted],
+  )
 
   return {
     theme,

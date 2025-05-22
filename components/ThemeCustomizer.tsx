@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Paintbrush, Check, TimerResetIcon as Reset, Copy, Palette } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -47,45 +47,56 @@ export function ThemeCustomizer() {
   const [colorValue, setColorValue] = useState<HSLColor>({ h: 0, s: 0, l: 0 })
   const { toast } = useToast()
 
-  // Update color value when selected color changes
+  // Update color value when selected color changes - with proper dependency array
   useEffect(() => {
-    if (mounted && selectedColor) {
+    if (mounted && selectedColor && open) {
       const color = getCssVar(selectedColor)
       if (color) {
         setColorValue(color)
       }
     }
-  }, [selectedColor, mounted, getCssVar])
+  }, [selectedColor, mounted, getCssVar, open])
 
   // Apply a predefined theme
-  const handleApplyTheme = (themeColor: ThemeColor) => {
-    applyThemeColor(themeColor)
+  const handleApplyTheme = useCallback(
+    (themeColor: ThemeColor) => {
+      applyThemeColor(themeColor)
 
-    toast({
-      title: "Theme Applied",
-      description: `${themePresets[themeColor].name} theme has been applied.`,
-    })
-  }
+      toast({
+        title: "Theme Applied",
+        description: `${themePresets[themeColor].name} theme has been applied.`,
+      })
+    },
+    [applyThemeColor, toast, themePresets],
+  )
 
   // Reset to default theme
-  const handleResetTheme = () => {
+  const handleResetTheme = useCallback(() => {
     resetTheme()
 
     toast({
       title: "Theme Reset",
       description: "Theme has been reset to default.",
     })
-  }
+  }, [resetTheme, toast])
 
-  // Update color values with sliders
-  const handleColorChange = (type: "h" | "s" | "l", value: number[]) => {
-    const newColor = { ...colorValue, [type]: value[0] }
-    setColorValue(newColor)
-    updateThemeColor(selectedColor, newColor)
-  }
+  // Update color values with sliders - with useCallback to prevent recreating on each render
+  const handleColorChange = useCallback(
+    (type: "h" | "s" | "l", value: number[]) => {
+      setColorValue((prev) => {
+        const newColor = { ...prev, [type]: value[0] }
+        // Only update theme color when dialog is open to prevent infinite loops
+        if (open) {
+          updateThemeColor(selectedColor, newColor)
+        }
+        return newColor
+      })
+    },
+    [selectedColor, updateThemeColor, open],
+  )
 
   // Save current theme as CSS
-  const saveThemeAsCSS = () => {
+  const saveThemeAsCSS = useCallback(() => {
     const theme = themePresets[activeThemeColor]
     if (!theme) return
 
@@ -106,7 +117,7 @@ export function ThemeCustomizer() {
         description: "Theme CSS has been copied to clipboard.",
       })
     })
-  }
+  }, [activeThemeColor, themePresets, toast])
 
   if (!mounted) {
     return (

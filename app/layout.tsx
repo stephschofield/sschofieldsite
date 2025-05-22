@@ -11,6 +11,29 @@ export const metadata = {
   title: "Stephanie Schofield - Personal Portfolio",
   description: "Personal portfolio website showcasing my work and skills",
   generator: "v0.dev",
+  icons: {
+    icon: "/stephanie-profile.jpeg",
+    apple: "/stephanie-profile.jpeg",
+  },
+  openGraph: {
+    title: "Stephanie Schofield - Personal Portfolio",
+    description: "Personal portfolio website showcasing my work and skills",
+    images: [
+      {
+        url: "/stephanie-profile.jpeg",
+        width: 800,
+        height: 800,
+        alt: "Stephanie Schofield",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Stephanie Schofield - Personal Portfolio",
+    description: "Personal portfolio website showcasing my work and skills",
+    images: ["/stephanie-profile.jpeg"],
+    creator: "@stephanieschofield",
+  },
 }
 
 export default function RootLayout({

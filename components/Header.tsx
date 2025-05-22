@@ -1,64 +1,84 @@
 "use client"
 
-import type React from "react"
-
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { motion } from "framer-motion"
-import { Menu } from "lucide-react"
-import FullScreenMenu from "./FullScreenMenu"
-import { CommandMenu } from "./CommandMenu"
-import { MainNav } from "./MainNav"
-import { ProfileSheet } from "./ProfileSheet"
-import { Separator } from "@/components/ui/separator"
+import Link from "next/link"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { CommandMenu } from "@/components/CommandMenu"
+import { ProfileSheet } from "@/components/ProfileSheet"
 import { ThemeSwitcher } from "./ThemeSwitcher"
+import { Menu, X } from "lucide-react"
 
 export default function Header() {
-  const [mounted, setMounted] = useState(false)
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const router = useRouter()
-
-  useEffect(() => setMounted(true), [])
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen)
-  }
-
-  const handleLogoClick = (e: React.MouseEvent) => {
-    e.preventDefault()
-    router.push("/")
-  }
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <>
-      <motion.header
-        className="sticky top-0 z-50 bg-background/80 backdrop-blur-md"
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        <nav className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
-          <div className="flex lg:flex-1">
-            <a href="/" onClick={handleLogoClick} className="-m-1.5 p-1.5 cursor-pointer">
-              <span className="sr-only">Stephanie Schofield</span>
-              <span className="text-xl font-bold">Stephanie Schofield</span>
-            </a>
-          </div>
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-14 items-center">
+        <div className="mr-4 hidden md:flex">
+          <Link href="/" className="mr-6 flex items-center space-x-2 pl-4">
+            <span className="hidden font-bold sm:inline-block">Stephanie Schofield</span>
+          </Link>
+          <nav className="flex items-center space-x-6 text-sm font-medium">
+            <Link href="/portfolio" className="transition-colors hover:text-foreground/80">
+              Portfolio
+            </Link>
+            <Link href="/about" className="transition-colors hover:text-foreground/80">
+              About
+            </Link>
+            <Link href="/contact" className="transition-colors hover:text-foreground/80">
+              Contact
+            </Link>
+          </nav>
+        </div>
 
-          <MainNav />
-
-          <div className="flex items-center gap-4">
+        <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
+          <div className="w-full flex-1 md:w-auto md:flex-none">
             <CommandMenu />
-            <ThemeSwitcher variant="ghost" />
-            <Separator orientation="vertical" className="h-6" />
-            <ProfileSheet />
-            <button className="md:hidden" onClick={toggleMenu}>
-              <Menu className="h-6 w-6" />
-            </button>
           </div>
-        </nav>
-      </motion.header>
-      <FullScreenMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
-    </>
+          <ThemeSwitcher />
+          <ProfileSheet />
+
+          <Button variant="ghost" className="md:hidden" size="icon" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            <span className="sr-only">Toggle Menu</span>
+          </Button>
+        </div>
+      </div>
+
+      {mobileMenuOpen && (
+        <div className="container pb-4 pt-2 md:hidden">
+          <nav className="flex flex-col space-y-3">
+            <Link
+              href="/"
+              className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Home
+            </Link>
+            <Link
+              href="/portfolio"
+              className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Portfolio
+            </Link>
+            <Link
+              href="/about"
+              className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              About
+            </Link>
+            <Link
+              href="/contact"
+              className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Contact
+            </Link>
+          </nav>
+        </div>
+      )}
+    </header>
   )
 }

@@ -126,20 +126,22 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
       const x = pixel.x + (Math.random() * 2 - 1)
       const y = pixel.y + (Math.random() * 2 - 1)
 
-      // Generate a color from a gradient palette suitable for light mode
-      const colors = [
-        "#1E88E5", // Blue
-        "#43A047", // Green
-        "#E53935", // Red
-        "#5E35B1", // Purple
-        "#FB8C00", // Orange
-        "#00ACC1", // Cyan
-        "#8E24AA", // Deep Purple
-        "#FFB300", // Amber
-        "#F4511E", // Deep Orange
-        "#546E7A", // Blue Grey
+      // Generate a blue color from a blue gradient palette
+      const blueColors = [
+        "#E3F2FD", // Light Blue 50
+        "#BBDEFB", // Light Blue 100
+        "#90CAF9", // Light Blue 200
+        "#64B5F6", // Light Blue 300
+        "#42A5F5", // Light Blue 400
+        "#2196F3", // Light Blue 500
+        "#1E88E5", // Light Blue 600
+        "#1976D2", // Light Blue 700
+        "#1565C0", // Light Blue 800
+        "#0D47A1", // Light Blue 900
+        "#0277BD", // Light Blue A700
+        "#01579B", // Light Blue A900
       ]
-      const randomColor = colors[Math.floor(Math.random() * colors.length)]
+      const randomBlue = blueColors[Math.floor(Math.random() * blueColors.length)]
 
       return {
         x,
@@ -148,7 +150,7 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
         baseY: y,
         size: Math.random() * 0.8 + 0.2, // Even smaller particles for higher density
         color: "#555555", // Darker gray for particles on light background
-        scatteredColor: randomColor,
+        scatteredColor: randomBlue,
         life: Math.random() * 100 + 50,
       }
     }
@@ -199,6 +201,7 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
 
       const { x: mouseX, y: mouseY } = mousePositionRef.current
       const maxDistance = 240
+      const colorDistance = 120 // Increased radius for color change
 
       // Process particles in chunks for better performance with high particle counts
       const chunkSize = 5000
@@ -214,6 +217,7 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
           const dy = mouseY - p.y
           const distance = Math.sqrt(dx * dx + dy * dy)
 
+          // Apply movement effect based on maxDistance
           if (distance < maxDistance && (isTouchingRef.current || !("ontouchstart" in window))) {
             const force = (maxDistance - distance) / maxDistance
             const angle = Math.atan2(dy, dx)
@@ -221,12 +225,16 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
             const moveY = Math.sin(angle) * force * 60
             p.x = p.baseX - moveX
             p.y = p.baseY - moveY
-
-            ctx.fillStyle = p.scatteredColor
           } else {
             p.x += (p.baseX - p.x) * 0.1
             p.y += (p.baseY - p.y) * 0.1
-            ctx.fillStyle = p.color // Use the particle's default color
+          }
+
+          // Apply color change only to particles very close to cursor
+          if (distance < colorDistance && (isTouchingRef.current || !("ontouchstart" in window))) {
+            ctx.fillStyle = p.scatteredColor // Use blue color for particles under cursor
+          } else {
+            ctx.fillStyle = p.color // Use default gray color
           }
 
           ctx.fillRect(p.x, p.y, p.size, p.size)
