@@ -1,83 +1,130 @@
 "use client"
 
-import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { useState, useEffect, useRef } from "react"
+import { motion } from "framer-motion"
 import Image from "next/image"
 
-const products = [
-  {
-    id: 1,
-    name: "Innovative Web Design",
-    description: "Cutting-edge web experiences that captivate and convert.",
-    image: "/placeholder.svg?height=600&width=600",
-  },
-  {
-    id: 2,
-    name: "Mobile App Development",
-    description: "Intuitive and powerful apps for iOS and Android platforms.",
-    image: "/placeholder.svg?height=600&width=600",
-  },
-  {
-    id: 3,
-    name: "Brand Identity Design",
-    description: "Memorable and impactful branding that tells your story.",
-    image: "/placeholder.svg?height=600&width=600",
-  },
-]
-
 export default function ProductShowcase() {
-  const [currentProduct, setCurrentProduct] = useState(0)
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [containerWidth, setContainerWidth] = useState(0)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
 
-  const nextProduct = () => {
-    setCurrentProduct((prev) => (prev + 1) % products.length)
-  }
+  const products = [
+    {
+      title: "Productivity App",
+      description: "A task management application with calendar integration",
+      image: "/productivity-app-interface.png",
+    },
+    {
+      title: "Meditation App",
+      description: "A mindfulness and meditation app with guided sessions",
+      image: "/meditation-app-interface.png",
+    },
+    {
+      title: "Color Palette Tool",
+      description: "A tool for designers to create and manage color palettes",
+      image: "/color-palette-tool.png",
+    },
+    {
+      title: "Typography Tool",
+      description: "A web application for testing and comparing typography",
+      image: "/typography-tool-interface.png",
+    },
+  ]
 
-  const prevProduct = () => {
-    setCurrentProduct((prev) => (prev - 1 + products.length) % products.length)
-  }
+  // Handle resize to update container width
+  useEffect(() => {
+    const updateWidth = () => {
+      if (containerRef.current) {
+        setContainerWidth(containerRef.current.offsetWidth)
+      }
+    }
+
+    // Initial width calculation
+    updateWidth()
+
+    // Add resize listener
+    window.addEventListener("resize", updateWidth)
+
+    // Cleanup
+    return () => {
+      window.removeEventListener("resize", updateWidth)
+    }
+  }, [])
+
+  // Handle auto-rotation
+  useEffect(() => {
+    // Clear any existing interval
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current)
+    }
+
+    // Set new interval
+    intervalRef.current = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % products.length)
+    }, 5000)
+
+    // Cleanup
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+      }
+    }
+  }, [products.length])
 
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50 overflow-hidden">
-      <div className="container mx-auto">
-        <h2 className="section-title">Our Expertise</h2>
-        <div className="relative">
-          <AnimatePresence mode="wait">
+    <section className="py-20 bg-white">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold mb-4">Featured Products</h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Explore some of my recent product designs and development work
+          </p>
+        </div>
+
+        <div className="relative overflow-hidden" ref={containerRef}>
+          <div className="flex justify-center">
             <motion.div
-              key={currentProduct}
-              className="flex flex-col md:flex-row items-center justify-between"
-              initial={{ opacity: 0, x: 100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -100 }}
-              transition={{ duration: 0.5 }}
+              className="flex"
+              animate={{ x: -currentIndex * containerWidth }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
             >
-              <div className="md:w-1/2 mb-8 md:mb-0">
-                <h3 className="text-3xl font-bold mb-4">{products[currentProduct].name}</h3>
-                <p className="text-xl text-gray-600 mb-8">{products[currentProduct].description}</p>
-                <button className="apple-button">Learn More</button>
-              </div>
-              <div className="md:w-1/2">
-                <Image
-                  src={products[currentProduct].image || "/placeholder.svg"}
-                  alt={products[currentProduct].name}
-                  width={600}
-                  height={600}
-                  className="rounded-2xl shadow-lg"
-                />
-              </div>
+              {products.map((product, index) => (
+                <div
+                  key={index}
+                  className="min-w-full px-4"
+                  style={{ width: containerWidth ? containerWidth : "100%" }}
+                >
+                  <div className="bg-gray-50 rounded-xl overflow-hidden shadow-lg">
+                    <div className="relative h-[300px] md:h-[400px]">
+                      <Image
+                        src={product.image || "/placeholder.svg"}
+                        alt={product.title}
+                        fill
+                        style={{ objectFit: "cover" }}
+                      />
+                    </div>
+                    <div className="p-6">
+                      <h3 className="text-xl font-bold mb-2">{product.title}</h3>
+                      <p className="text-gray-600">{product.description}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </motion.div>
-          </AnimatePresence>
-          <button
-            className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-lg"
-            onClick={prevProduct}
-          >
-            ←
-          </button>
-          <button
-            className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-lg"
-            onClick={nextProduct}
-          >
-            →
-          </button>
+          </div>
+
+          <div className="flex justify-center mt-8 space-x-2">
+            {products.map((_, index) => (
+              <button
+                key={index}
+                className={`w-3 h-3 rounded-full ${currentIndex === index ? "bg-blue-600" : "bg-gray-300"}`}
+                onClick={() => setCurrentIndex(index)}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </section>

@@ -1,29 +1,55 @@
 "use client"
 
+import { useRef, useEffect, useState } from "react"
 import { motion } from "framer-motion"
 
 export default function Marquee() {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [width, setWidth] = useState(0)
+
+  useEffect(() => {
+    if (containerRef.current) {
+      setWidth(containerRef.current.scrollWidth - containerRef.current.offsetWidth)
+    }
+  }, [containerRef.current?.scrollWidth, containerRef.current?.offsetWidth])
+
   return (
-    <div className="relative w-full overflow-hidden bg-background py-16">
-      <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-background z-10" />
-      <motion.div
-        className="flex whitespace-nowrap"
-        animate={{ x: ["0%", "-50%"] }}
-        transition={{ repeat: Number.POSITIVE_INFINITY, ease: "linear", duration: 20 }}
-      >
-        {[...Array(4)].map((_, index) => (
-          <div key={index} className="flex items-center mx-4">
-            <span
-              className="text-7xl sm:text-8xl md:text-9xl font-bold text-transparent px-4"
-              style={{
-                WebkitTextStroke: "1px rgb(156 163 175)", // tailwind gray-400
-              }}
-            >
-              Flowers & Saints
-            </span>
-          </div>
-        ))}
-      </motion.div>
-    </div>
+    <section className="py-16 bg-gray-50 overflow-hidden">
+      <div className="container mx-auto px-4">
+        <h2 className="text-3xl font-bold text-center mb-12">Technologies I Work With</h2>
+        <div className="overflow-hidden" ref={containerRef}>
+          <motion.div
+            className="flex items-center space-x-12"
+            drag="x"
+            dragConstraints={{ right: 0, left: -width }}
+            initial={{ x: 0 }}
+            animate={{ x: -width }}
+            transition={{ repeat: Number.POSITIVE_INFINITY, duration: 20, ease: "linear" }}
+          >
+            {[
+              "React",
+              "Next.js",
+              "TypeScript",
+              "Node.js",
+              "GraphQL",
+              "Tailwind CSS",
+              "Framer Motion",
+              "Figma",
+              "AWS",
+              "Firebase",
+              "MongoDB",
+              "PostgreSQL",
+            ].map((tech) => (
+              <div
+                key={tech}
+                className="flex-shrink-0 bg-white rounded-lg shadow-md px-8 py-6 min-w-[200px] text-center"
+              >
+                <p className="font-medium text-lg">{tech}</p>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+      </div>
+    </section>
   )
 }

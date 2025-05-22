@@ -1,85 +1,102 @@
 "use client"
 
-import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { useState, useEffect } from "react"
+import { motion } from "framer-motion"
 import Image from "next/image"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 const projects = [
   {
     id: 1,
-    title: "Minimalist Brand Identity",
-    description: "Clean and modern visual communication for a tech startup",
-    imageUrl: "/placeholder.svg?height=600&width=800",
-    category: "Branding",
+    title: "Productivity Dashboard",
+    category: "Web App",
+    image: "/productivity-app-dashboard.png",
+    link: "/projects/productivity-dashboard",
   },
   {
     id: 2,
-    title: "Sleek Web Experience",
-    description: "Elegant online presence for a luxury fashion brand",
-    imageUrl: "/placeholder.svg?height=800&width=600",
-    category: "Web Design",
+    title: "Meditation App",
+    category: "Mobile App",
+    image: "/meditation-app-dashboard.png",
+    link: "/projects/meditation-app",
   },
   {
     id: 3,
-    title: "Intuitive Mobile App",
-    description: "User-friendly app design for a health and wellness company",
-    imageUrl: "/placeholder.svg?height=600&width=800",
-    category: "Mobile App",
+    title: "Fashion Boutique Website",
+    category: "E-commerce",
+    image: "/fashion-boutique-website.png",
+    link: "/projects/fashion-boutique",
   },
   {
     id: 4,
-    title: "Elegant Digital Campaign",
-    description: "Sophisticated marketing strategy for a luxury automotive brand",
-    imageUrl: "/placeholder.svg?height=800&width=600",
-    category: "Digital Marketing",
+    title: "Analytics Dashboard",
+    category: "Web App",
+    image: "/analytics-dashboard.png",
+    link: "/projects/analytics-dashboard",
   },
   {
     id: 5,
-    title: "Refined UI/UX Design",
-    description: "Streamlined user interfaces for a financial services platform",
-    imageUrl: "/placeholder.svg?height=600&width=800",
-    category: "UI/UX",
+    title: "Productivity Mobile App",
+    category: "Mobile App",
+    image: "/productivity-app-mobile.png",
+    link: "/projects/productivity-mobile",
   },
   {
     id: 6,
-    title: "Minimalist Product Design",
-    description: "Sleek and functional design for a smart home device",
-    imageUrl: "/placeholder.svg?height=800&width=600",
-    category: "Product Design",
+    title: "Meditation Session",
+    category: "Mobile App",
+    image: "/meditation-app-session.png",
+    link: "/projects/meditation-session",
   },
 ]
 
-const categories = ["All", ...new Set(projects.map((project) => project.category))]
+const categories = ["All", "Web App", "Mobile App", "E-commerce"]
 
 export default function PortfolioGrid() {
-  const [filter, setFilter] = useState("All")
+  const [selectedCategory, setSelectedCategory] = useState("All")
+  const [filteredProjects, setFilteredProjects] = useState(projects)
+  const isMobile = useIsMobile()
 
-  const filteredProjects = filter === "All" ? projects : projects.filter((project) => project.category === filter)
+  useEffect(() => {
+    if (selectedCategory === "All") {
+      setFilteredProjects(projects)
+    } else {
+      setFilteredProjects(projects.filter((project) => project.category === selectedCategory))
+    }
+  }, [selectedCategory])
+
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  }
+
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 },
+  }
 
   return (
-    <section className="py-20 bg-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          className="text-center mb-12"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <h2 className="text-3xl font-bold text-foreground sm:text-4xl">Our Work</h2>
-          <p className="mt-4 text-lg text-muted-foreground">
-            A showcase of our minimalist designs and creative solutions.
+    <section className="py-20 bg-gray-50">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold mb-4">My Portfolio</h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Explore my recent projects and see how I can help bring your ideas to life
           </p>
-        </motion.div>
+        </div>
 
-        <div className="flex justify-center space-x-4 mb-8">
+        <div className="flex justify-center mb-8 flex-wrap gap-2">
           {categories.map((category) => (
             <button
               key={category}
-              onClick={() => setFilter(category)}
+              onClick={() => setSelectedCategory(category)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                filter === category
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                selectedCategory === category ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-100"
               }`}
             >
               {category}
@@ -87,57 +104,33 @@ export default function PortfolioGrid() {
           ))}
         </div>
 
-        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <AnimatePresence>
-            {filteredProjects.map((project) => (
-              <motion.div
-                key={project.id}
-                layout
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.5 }}
-                className="bg-background rounded-3xl shadow-lg overflow-hidden hover-lift transition-all duration-300 ease-in-out border-2 border-transparent hover:border-primary/10"
-              >
-                <div className="relative h-64 overflow-hidden">
-                  <Image
-                    src={project.imageUrl || "/placeholder.svg"}
-                    alt={project.title}
-                    layout="fill"
-                    objectFit="cover"
-                    className="transition-transform duration-300 ease-in-out group-hover:scale-105"
-                  />
-                  <motion.div
-                    className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 transition-opacity duration-300"
-                    whileHover={{ opacity: 1 }}
-                  >
-                    <p className="text-white text-center px-4">{project.description}</p>
-                  </motion.div>
+        <motion.div
+          variants={container}
+          initial="hidden"
+          animate="show"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
+          {filteredProjects.map((project) => (
+            <motion.div key={project.id} variants={item} className="group">
+              <a href={project.link} className="block">
+                <div className="bg-white rounded-xl overflow-hidden shadow-md transition-all duration-300 group-hover:shadow-xl">
+                  <div className="relative h-64 overflow-hidden">
+                    <Image
+                      src={project.image || "/placeholder.svg"}
+                      alt={project.title}
+                      fill
+                      style={{ objectFit: "cover" }}
+                      className="transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="p-6">
+                    <span className="text-sm text-blue-600 font-medium">{project.category}</span>
+                    <h3 className="text-xl font-bold mt-1">{project.title}</h3>
+                  </div>
                 </div>
-                <div className="p-6">
-                  <div className="text-sm font-medium text-primary mb-1">{project.category}</div>
-                  <h3 className="text-xl font-semibold text-foreground mb-2">{project.title}</h3>
-                  <a
-                    href="https://www.flowersandsaints.com.au"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary hover:underline inline-flex items-center"
-                  >
-                    View Project
-                    <svg
-                      className="w-4 h-4 ml-2"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                  </a>
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
+              </a>
+            </motion.div>
+          ))}
         </motion.div>
       </div>
     </section>

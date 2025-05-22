@@ -8,15 +8,13 @@ export default function FloatingActionButton() {
 
   useEffect(() => {
     const toggleVisibility = () => {
-      if (window.pageYOffset > 300) {
-        setIsVisible(true)
-      } else {
-        setIsVisible(false)
-      }
+      setIsVisible(window.pageYOffset > 300)
     }
 
-    window.addEventListener("scroll", toggleVisibility)
+    // Initial check
+    toggleVisibility()
 
+    window.addEventListener("scroll", toggleVisibility)
     return () => window.removeEventListener("scroll", toggleVisibility)
   }, [])
 

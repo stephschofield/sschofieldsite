@@ -1,44 +1,86 @@
 "use client"
 
-import { motion } from "framer-motion"
-import LottieAnimation from "./LottieAnimation"
+import { useRef, useEffect, useState } from "react"
+import lottie from "lottie-web"
+import { motion, useInView } from "framer-motion"
 
 export default function LottieSection() {
-  return (
-    <section className="py-20 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          className="text-center mb-12"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <h2 className="section-title">Creative Process</h2>
-          <p className="mt-4 text-lg text-gray-600">A visual representation of how I approach design and development</p>
-        </motion.div>
+  const containerRef = useRef<HTMLDivElement>(null)
+  const lottieRef = useRef<HTMLDivElement>(null)
+  const isInView = useInView(containerRef, { once: true, amount: 0.3 })
+  const [lottieLoaded, setLottieLoaded] = useState(false)
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="space-y-4">
-            <LottieAnimation />
-            <h3 className="text-xl font-semibold text-gray-900 text-center">Discovery</h3>
-            <p className="text-gray-600 text-center">
-              Understanding the problem space and gathering requirements through research and stakeholder interviews.
+  useEffect(() => {
+    let animation: any = null
+
+    if (lottieRef.current && !lottieLoaded) {
+      animation = lottie.loadAnimation({
+        container: lottieRef.current,
+        renderer: "svg",
+        loop: true,
+        autoplay: false,
+        path: "https://assets5.lottiefiles.com/packages/lf20_iorpbol0.json",
+      })
+
+      setLottieLoaded(true)
+    }
+
+    return () => {
+      if (animation) {
+        animation.destroy()
+      }
+    }
+  }, [lottieLoaded])
+
+  useEffect(() => {
+    if (isInView && lottieLoaded) {
+      const animation = lottie.getRegisteredAnimations()[0]
+      if (animation) {
+        animation.play()
+      }
+    }
+  }, [isInView, lottieLoaded])
+
+  return (
+    <section className="py-20 bg-white" ref={containerRef}>
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <h2 className="text-3xl font-bold mb-6">Creative Process</h2>
+            <p className="text-gray-600 mb-6">
+              My design and development process is collaborative and iterative. I work closely with clients to
+              understand their needs and create solutions that exceed expectations.
             </p>
-          </div>
-          <div className="space-y-4">
-            <LottieAnimation />
-            <h3 className="text-xl font-semibold text-gray-900 text-center">Design</h3>
-            <p className="text-gray-600 text-center">
-              Creating wireframes, prototypes, and visual designs that address user needs and business goals.
-            </p>
-          </div>
-          <div className="space-y-4">
-            <LottieAnimation />
-            <h3 className="text-xl font-semibold text-gray-900 text-center">Development</h3>
-            <p className="text-gray-600 text-center">
-              Bringing designs to life with clean, efficient code and continuous iteration based on feedback.
-            </p>
-          </div>
+            <ul className="space-y-4">
+              {[
+                "Discovery and research",
+                "Strategy and planning",
+                "Design and prototyping",
+                "Development and testing",
+                "Launch and optimization",
+              ].map((step, index) => (
+                <li key={index} className="flex items-start">
+                  <span className="flex-shrink-0 h-6 w-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mr-3">
+                    {index + 1}
+                  </span>
+                  <span>{step}</span>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 50 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="bg-gray-50 rounded-xl p-6 h-[400px] flex items-center justify-center"
+          >
+            <div ref={lottieRef} className="w-full h-full"></div>
+          </motion.div>
         </div>
       </div>
     </section>

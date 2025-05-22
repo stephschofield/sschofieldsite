@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import Link from "next/link"
 import { X } from "lucide-react"
@@ -10,48 +11,93 @@ interface FullScreenMenuProps {
 }
 
 export default function FullScreenMenu({ isOpen, onClose }: FullScreenMenuProps) {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = ""
+    }
+
+    return () => {
+      document.body.style.overflow = ""
+    }
+  }, [isOpen])
+
+  const menuVariants = {
+    closed: {
+      opacity: 0,
+      y: "-100%",
+      transition: {
+        duration: 0.5,
+        ease: [0.76, 0, 0.24, 1],
+      },
+    },
+    open: {
+      opacity: 1,
+      y: "0%",
+      transition: {
+        duration: 0.5,
+        ease: [0.76, 0, 0.24, 1],
+      },
+    },
+  }
+
+  const itemVariants = {
+    closed: { opacity: 0, y: 20 },
+    open: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: 0.25 + i * 0.1,
+        duration: 0.5,
+        ease: [0.76, 0, 0.24, 1],
+      },
+    }),
+  }
+
   const menuItems = [
-    { name: "Home", href: "/" },
-    { name: "About", href: "#about" },
-    { name: "Services", href: "#services" },
-    { name: "Projects", href: "/projects" },
-    { name: "Contact", href: "#contact" },
+    { title: "Home", href: "/" },
+    { title: "Portfolio", href: "/portfolio" },
+    { title: "Projects", href: "/projects" },
+    { title: "Contact", href: "#contact" },
   ]
 
   return (
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 bg-white dark:bg-gray-900 z-50 flex items-center justify-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 bg-background"
+          initial="closed"
+          animate="open"
+          exit="closed"
+          variants={menuVariants}
         >
-          <button
-            className="absolute top-6 right-6 text-gray-900 dark:text-white"
-            onClick={onClose}
-            aria-label="Close menu"
-          >
-            <X className="w-8 h-8" />
-          </button>
-          <nav className="text-center">
-            {menuItems.map((item, index) => (
-              <motion.div
-                key={item.name}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
+          <div className="container mx-auto px-4 py-8 h-full flex flex-col">
+            <div className="flex justify-end">
+              <button
+                onClick={onClose}
+                className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                aria-label="Close menu"
               >
-                <Link
-                  href={item.href}
-                  className="block text-4xl font-bold text-gray-900 dark:text-white mb-6 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                  onClick={onClose}
-                >
-                  {item.name}
-                </Link>
-              </motion.div>
-            ))}
-          </nav>
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+            <div className="flex-1 flex flex-col items-center justify-center">
+              <nav className="flex flex-col items-center space-y-8">
+                {menuItems.map((item, i) => (
+                  <motion.div key={item.title} custom={i} variants={itemVariants}>
+                    <Link
+                      href={item.href}
+                      className="text-4xl font-bold hover:text-primary transition-colors"
+                      onClick={onClose}
+                    >
+                      {item.title}
+                    </Link>
+                  </motion.div>
+                ))}
+              </nav>
+            </div>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>
