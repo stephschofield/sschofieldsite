@@ -1,138 +1,118 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
-import Image from "next/image"
-import { useIsMobile } from "@/hooks/use-mobile"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { ProjectCard } from "@/components/ProjectCard"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Search } from "lucide-react"
 
-const projects = [
+interface Project {
+  id: string
+  title: string
+  description: string
+  image: string
+  tags: string[]
+  link: string
+}
+
+const projects: Project[] = [
   {
-    id: 1,
-    title: "Productivity Dashboard",
-    category: "Web App",
-    image: "/productivity-app-dashboard.png",
-    link: "/projects/productivity-dashboard",
+    id: "1",
+    title: "Productivity App",
+    description: "A productivity app designed to help users manage their tasks and time effectively.",
+    image: "/productivity-app-interface.png",
+    tags: ["React", "TypeScript", "Tailwind"],
+    link: "/projects/productivity-app",
   },
   {
-    id: 2,
+    id: "2",
     title: "Meditation App",
-    category: "Mobile App",
-    image: "/meditation-app-dashboard.png",
+    description: "A meditation app with guided sessions and progress tracking.",
+    image: "/meditation-app-interface.png",
+    tags: ["React Native", "Redux", "Node.js"],
     link: "/projects/meditation-app",
   },
   {
-    id: 3,
+    id: "3",
+    title: "Color Palette Tool",
+    description: "A tool for designers to create and export color palettes for their projects.",
+    image: "/color-palette-tool.png",
+    tags: ["JavaScript", "Canvas API", "CSS"],
+    link: "/projects/color-palette",
+  },
+  {
+    id: "4",
+    title: "Typography Tool",
+    description: "A web application for testing and comparing different typography combinations.",
+    image: "/typography-tool-interface.png",
+    tags: ["Vue.js", "SCSS", "Firebase"],
+    link: "/projects/typography-tool",
+  },
+  {
+    id: "5",
     title: "Fashion Boutique Website",
-    category: "E-commerce",
+    description: "An e-commerce website for a fashion boutique with a focus on user experience.",
     image: "/fashion-boutique-website.png",
+    tags: ["Next.js", "Stripe", "MongoDB"],
     link: "/projects/fashion-boutique",
   },
   {
-    id: 4,
+    id: "6",
     title: "Analytics Dashboard",
-    category: "Web App",
+    description: "A comprehensive analytics dashboard for tracking business metrics.",
     image: "/analytics-dashboard.png",
+    tags: ["React", "D3.js", "GraphQL"],
     link: "/projects/analytics-dashboard",
-  },
-  {
-    id: 5,
-    title: "Productivity Mobile App",
-    category: "Mobile App",
-    image: "/productivity-app-mobile.png",
-    link: "/projects/productivity-mobile",
-  },
-  {
-    id: 6,
-    title: "Meditation Session",
-    category: "Mobile App",
-    image: "/meditation-app-session.png",
-    link: "/projects/meditation-session",
   },
 ]
 
-const categories = ["All", "Web App", "Mobile App", "E-commerce"]
-
 export default function PortfolioGrid() {
-  const [selectedCategory, setSelectedCategory] = useState("All")
-  const [filteredProjects, setFilteredProjects] = useState(projects)
-  const isMobile = useIsMobile()
+  const [searchQuery, setSearchQuery] = useState("")
+  const router = useRouter()
 
-  useEffect(() => {
-    if (selectedCategory === "All") {
-      setFilteredProjects(projects)
-    } else {
-      setFilteredProjects(projects.filter((project) => project.category === selectedCategory))
+  const filteredProjects = projects.filter((project) => {
+    const searchString = `${project.title} ${project.description} ${project.tags.join(" ")}`.toLowerCase()
+    return searchString.includes(searchQuery.toLowerCase())
+  })
+
+  const handleProjectClick = (link: string) => {
+    try {
+      router.push(link)
+    } catch (error) {
+      console.error("Error navigating to project:", error)
     }
-  }, [selectedCategory])
-
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  }
-
-  const item = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 },
   }
 
   return (
-    <section className="py-20 bg-gray-50">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">My Portfolio</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Explore my recent projects and see how I can help bring your ideas to life
-          </p>
+    <div className="container mx-auto px-4 py-12">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+        <h2 className="text-3xl font-bold">My Projects</h2>
+        <div className="relative w-full md:w-64">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={18} />
+          <Input
+            type="text"
+            placeholder="Search projects..."
+            className="pl-10"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
         </div>
-
-        <div className="flex justify-center mb-8 flex-wrap gap-2">
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                selectedCategory === category ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-100"
-              }`}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
-
-        <motion.div
-          variants={container}
-          initial="hidden"
-          animate="show"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-        >
-          {filteredProjects.map((project) => (
-            <motion.div key={project.id} variants={item} className="group">
-              <a href={project.link} className="block">
-                <div className="bg-white rounded-xl overflow-hidden shadow-md transition-all duration-300 group-hover:shadow-xl">
-                  <div className="relative h-64 overflow-hidden">
-                    <Image
-                      src={project.image || "/placeholder.svg"}
-                      alt={project.title}
-                      fill
-                      style={{ objectFit: "cover" }}
-                      className="transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </div>
-                  <div className="p-6">
-                    <span className="text-sm text-blue-600 font-medium">{project.category}</span>
-                    <h3 className="text-xl font-bold mt-1">{project.title}</h3>
-                  </div>
-                </div>
-              </a>
-            </motion.div>
-          ))}
-        </motion.div>
       </div>
-    </section>
+
+      {filteredProjects.length === 0 ? (
+        <div className="text-center py-12">
+          <h3 className="text-xl font-medium mb-4">No projects found</h3>
+          <p className="text-muted-foreground mb-6">Try adjusting your search criteria</p>
+          <Button onClick={() => setSearchQuery("")}>Clear Search</Button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredProjects.map((project) => (
+            <ProjectCard key={project.id} project={project} onClick={() => handleProjectClick(project.link)} />
+          ))}
+        </div>
+      )}
+    </div>
   )
 }

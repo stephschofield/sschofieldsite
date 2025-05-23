@@ -7,9 +7,26 @@ import { CommandMenu } from "@/components/CommandMenu"
 import { ProfileSheet } from "@/components/ProfileSheet"
 import { ThemeSwitcher } from "./ThemeSwitcher"
 import { Menu, X } from "lucide-react"
+import { MainNav } from "./MainNav"
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  const toggleMobileMenu = () => {
+    try {
+      setMobileMenuOpen(!mobileMenuOpen)
+    } catch (error) {
+      console.error("Error in toggleMobileMenu:", error)
+    }
+  }
+
+  const closeMobileMenu = () => {
+    try {
+      setMobileMenuOpen(false)
+    } catch (error) {
+      console.error("Error in closeMobileMenu:", error)
+    }
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -18,17 +35,7 @@ export default function Header() {
           <Link href="/" className="mr-6 flex items-center space-x-2 pl-4">
             <span className="hidden font-bold sm:inline-block">Stephanie Schofield</span>
           </Link>
-          <nav className="flex items-center space-x-6 text-sm font-medium">
-            <Link href="/portfolio" className="transition-colors hover:text-foreground/80">
-              Portfolio
-            </Link>
-            <Link href="/about" className="transition-colors hover:text-foreground/80">
-              About
-            </Link>
-            <Link href="/contact" className="transition-colors hover:text-foreground/80">
-              Contact
-            </Link>
-          </nav>
+          <MainNav />
         </div>
 
         <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
@@ -38,7 +45,7 @@ export default function Header() {
           <ThemeSwitcher />
           <ProfileSheet />
 
-          <Button variant="ghost" className="md:hidden" size="icon" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          <Button variant="ghost" className="md:hidden" size="icon" onClick={toggleMobileMenu}>
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             <span className="sr-only">Toggle Menu</span>
           </Button>
@@ -51,28 +58,28 @@ export default function Header() {
             <Link
               href="/"
               className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
-              onClick={() => setMobileMenuOpen(false)}
+              onClick={closeMobileMenu}
             >
               Home
             </Link>
             <Link
               href="/portfolio"
               className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
-              onClick={() => setMobileMenuOpen(false)}
+              onClick={closeMobileMenu}
             >
               Portfolio
             </Link>
             <Link
-              href="/about"
+              href="/projects"
               className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
-              onClick={() => setMobileMenuOpen(false)}
+              onClick={closeMobileMenu}
             >
-              About
+              Projects
             </Link>
             <Link
-              href="/contact"
+              href="#contact"
               className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
-              onClick={() => setMobileMenuOpen(false)}
+              onClick={closeMobileMenu}
             >
               Contact
             </Link>
