@@ -7,30 +7,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { MapPin, Calendar, Github, Linkedin, Twitter } from "lucide-react"
 
-interface ProfileSheetProps {
-  auth?: {
-    user?: {
-      name?: string
-      email?: string
-      image?: string
-      location?: string
-      joinDate?: string
-      bio?: string
-      skills?: string[]
-      socialLinks?: {
-        github?: string
-        linkedin?: string
-        twitter?: string
-      }
-    }
-  }
-}
+type ProfileSheetProps = {}
 
-export function ProfileSheet({ auth }: ProfileSheetProps) {
+export function ProfileSheet({}: ProfileSheetProps) {
   const [isOpen, setIsOpen] = useState(false)
 
-  // Provide default values if auth is undefined
-  const user = auth?.user || {
+  const user = {
     name: "Stephanie Schofield",
     email: "stephanie@example.com",
     image: "/stephanie-profile.jpeg",

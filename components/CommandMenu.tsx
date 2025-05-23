@@ -14,16 +14,9 @@ import { Button } from "@/components/ui/button"
 import { Search, Home, User, Settings, Mail, FileText, Palette, Calendar } from "lucide-react"
 import { useRouter } from "next/navigation"
 
-interface CommandMenuProps {
-  auth?: {
-    user?: {
-      name?: string
-      email?: string
-    }
-  }
-}
+type CommandMenuProps = {}
 
-export function CommandMenu({ auth }: CommandMenuProps) {
+export function CommandMenu({}: CommandMenuProps) {
   const [open, setOpen] = useState(false)
   const router = useRouter()
 
@@ -43,10 +36,9 @@ export function CommandMenu({ auth }: CommandMenuProps) {
     command()
   }
 
-  // Provide default values if auth is undefined
-  const user = auth?.user || {
-    name: "Guest User",
-    email: "guest@example.com",
+  const user = {
+    name: "Stephanie Schofield",
+    email: "stephanie@example.com",
   }
 
   return (
