@@ -1,5 +1,7 @@
 "use client"
 
+import type React from "react"
+
 import Link from "next/link"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
@@ -25,6 +27,18 @@ export default function Header() {
       setMobileMenuOpen(false)
     } catch (error) {
       console.error("Error in closeMobileMenu:", error)
+    }
+  }
+
+  const handleContactClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    closeMobileMenu()
+
+    const contactElement = document.querySelector("#contact")
+    if (contactElement) {
+      contactElement.scrollIntoView({ behavior: "smooth", block: "start" })
+    } else {
+      console.warn("Contact section not found")
     }
   }
 
@@ -76,13 +90,13 @@ export default function Header() {
             >
               Projects
             </Link>
-            <Link
+            <a
               href="#contact"
               className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
-              onClick={closeMobileMenu}
+              onClick={handleContactClick}
             >
               Contact
-            </Link>
+            </a>
           </nav>
         </div>
       )}

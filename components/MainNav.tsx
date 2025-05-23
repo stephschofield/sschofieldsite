@@ -23,7 +23,12 @@ export function MainNav() {
 
     if (href.startsWith("#")) {
       // For hash links (like #contact)
-      document.querySelector(href)?.scrollIntoView({ behavior: "smooth" })
+      const element = document.querySelector(href)
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" })
+      } else {
+        console.warn(`Element with selector ${href} not found`)
+      }
     } else {
       // For page navigation
       try {
