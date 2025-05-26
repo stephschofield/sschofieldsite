@@ -10,9 +10,13 @@ import { ProfileSheet } from "@/components/ProfileSheet"
 import { ThemeSwitcher } from "./ThemeSwitcher"
 import { Menu, X } from "lucide-react"
 import { MainNav } from "./MainNav"
+import { useRouter } from "next/navigation"
+import { usePathname } from "next/navigation"
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const router = useRouter()
+  const pathname = usePathname()
 
   const toggleMobileMenu = () => {
     try {
@@ -34,11 +38,17 @@ export default function Header() {
     e.preventDefault()
     closeMobileMenu()
 
-    const contactElement = document.querySelector("#contact")
+    const contactElement = document.getElementById("contact")
     if (contactElement) {
+      console.log("Scrolling to contact section")
       contactElement.scrollIntoView({ behavior: "smooth", block: "start" })
     } else {
       console.warn("Contact section not found")
+
+      // If we're not on the homepage, navigate to homepage first
+      if (pathname !== "/") {
+        router.push("/#contact")
+      }
     }
   }
 

@@ -23,11 +23,19 @@ export function MainNav() {
 
     if (href.startsWith("#")) {
       // For hash links (like #contact)
-      const element = document.querySelector(href)
+      const targetId = href.substring(1) // Remove the # character
+      const element = document.getElementById(targetId)
+
       if (element) {
+        console.log(`Scrolling to element with id: ${targetId}`)
         element.scrollIntoView({ behavior: "smooth", block: "start" })
       } else {
-        console.warn(`Element with selector ${href} not found`)
+        console.warn(`Element with id ${targetId} not found`)
+
+        // If we're not on the homepage, navigate to homepage first
+        if (pathname !== "/") {
+          router.push(`/${href}`)
+        }
       }
     } else {
       // For page navigation
@@ -37,12 +45,6 @@ export function MainNav() {
         console.error("Navigation error:", error)
         window.location.href = href
       }
-
-      // Fallback direct navigation after a short delay if router.push doesn't work
-      setTimeout(() => {
-        if (pathname === href) return // Don't redirect if we're already there
-        window.location.href = href
-      }, 100)
     }
   }
 
