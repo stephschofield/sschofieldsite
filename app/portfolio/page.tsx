@@ -1,121 +1,46 @@
 "use client"
-
-import { useRef, useState, useEffect } from "react"
 import Header from "@/components/Header"
-import AboutUs from "@/components/AboutUs"
-import PortfolioGrid from "@/components/PortfolioGrid"
-import EnhancedContactForm from "@/components/EnhancedContactForm"
 import Footer from "@/components/Footer"
-import Marquee from "@/components/Marquee"
-import NewsletterSubscribe from "@/components/NewsletterSubscribe"
-import Timeline from "@/components/Timeline"
-import FloatingActionButton from "@/components/FloatingActionButton"
-import LottieSection from "@/components/LottieSection"
-import Announcement from "@/components/Announcement"
-import SkillsSection from "@/components/SkillsSection"
-import TabbedFAQ from "@/components/TabbedFAQ"
-import Testimonials from "@/components/Testimonials"
-import Services from "@/components/Services"
-import ProductShowcase from "@/components/ProductShowcase"
-import WearYourStory from "@/components/WearYourStory"
-import { ErrorBoundary } from "react-error-boundary"
+import PortfolioGrid from "@/components/PortfolioGrid"
+import { motion } from "framer-motion"
 
-// Create a loading state component
-function LoadingState() {
-  return <div className="min-h-screen flex items-center justify-center">Loading...</div>
-}
-
-function ErrorFallback({ error, reset }: { error: Error; reset: () => void }) {
+export default function PortfolioPage() {
   return (
-    <div role="alert">
-      <p>Something went wrong:</p>
-      <pre style={{ color: "red" }}>{error.message}</pre>
-      <button onClick={reset}>Try again</button>
+    <div className="min-h-screen flex flex-col">
+      <Header />
+
+      <main className="flex-1">
+        <motion.section
+          className="py-16 px-4 md:px-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="container mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="text-center mb-16"
+            >
+              <h1 className="text-4xl md:text-5xl font-bold mb-4">My Portfolio</h1>
+              <p className="text-muted-foreground text-center max-w-2xl mx-auto">
+                A collection of my recent work across web development, mobile applications, and design solutions.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <PortfolioGrid />
+            </motion.div>
+          </div>
+        </motion.section>
+      </main>
+
+      <Footer />
     </div>
-  )
-}
-
-export default function Portfolio() {
-  const [isMounted, setIsMounted] = useState(false)
-  const aboutRef = useRef<HTMLDivElement>(null)
-  const servicesRef = useRef<HTMLDivElement>(null)
-  const portfolioRef = useRef<HTMLDivElement>(null)
-  const contactRef = useRef<HTMLDivElement>(null)
-  const skillsRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
-
-  if (!isMounted) {
-    return <LoadingState />
-  }
-
-  return (
-    <ErrorBoundary
-      FallbackComponent={ErrorFallback}
-      onReset={() => {
-        // Reset the state of the component
-        console.log("Resetting the component")
-      }}
-    >
-      <>
-        <Header />
-        <Announcement />
-
-        {/* About Section */}
-        <div ref={aboutRef} id="about">
-          <AboutUs />
-        </div>
-
-        {/* Skills Section */}
-        <div ref={skillsRef} id="skills">
-          <SkillsSection />
-        </div>
-
-        {/* Services Section */}
-        <div ref={servicesRef} id="services">
-          <Services />
-        </div>
-
-        {/* Lottie Animation Section */}
-        <LottieSection />
-
-        {/* Marquee Section */}
-        <Marquee />
-
-        <ProductShowcase />
-
-        {/* Portfolio Section */}
-        <div ref={portfolioRef} id="portfolio">
-          <PortfolioGrid />
-        </div>
-
-        {/* Testimonials Section */}
-        <Testimonials />
-
-        {/* Timeline Section */}
-        <Timeline />
-
-        <WearYourStory />
-
-        {/* FAQ Section */}
-        <TabbedFAQ />
-
-        {/* Newsletter Section */}
-        <NewsletterSubscribe />
-
-        {/* Contact Section */}
-        <div id="contact" ref={contactRef}>
-          <EnhancedContactForm />
-        </div>
-
-        {/* Footer */}
-        <Footer />
-
-        {/* Floating Action Button */}
-        <FloatingActionButton />
-      </>
-    </ErrorBoundary>
   )
 }
