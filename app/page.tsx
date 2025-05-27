@@ -7,6 +7,7 @@ import ParticleHero from "@/components/ParticleHero"
 import Header from "@/components/Header"
 import PortfolioGrid from "@/components/PortfolioGrid"
 import Footer from "@/components/Footer"
+import SocialLinks from "@/components/SocialLinks"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -75,6 +76,12 @@ export default function Home() {
                   <MapPin className="h-5 w-5 text-primary" />
                   <span>Dallas, Texas</span>
                 </div>
+              </div>
+
+              {/* Social Links */}
+              <div className="mt-8">
+                <h4 className="text-lg font-medium mb-4">Connect with me</h4>
+                <SocialLinks />
               </div>
             </div>
 
