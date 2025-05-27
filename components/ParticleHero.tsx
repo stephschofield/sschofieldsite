@@ -117,7 +117,7 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
 
       // Calculate text size to span across the page - MUCH LARGER
       const baseViewportWidth = canvas.width
-      const fontSize = isMobile ? baseViewportWidth * 0.25 : baseViewportWidth * 0.18 // Much larger font size
+      const fontSize = isMobile ? baseViewportWidth * 0.2 : baseViewportWidth * 0.15 // Reduced font sizes
       const welcomeText = "Welcome to"
       const officeText = "my office"
 
