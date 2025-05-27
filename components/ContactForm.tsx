@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Mail, Phone, MapPin } from "lucide-react"
+import { Mail, Phone, MapPin, CheckCircle, XCircle } from "lucide-react"
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -39,12 +39,47 @@ export default function ContactForm() {
       console.log("Form submitted:", formData)
       setSubmitStatus("success")
       setFormData({ name: "", email: "", subject: "", message: "" })
+
+      // Reset success message after 5 seconds
+      setTimeout(() => {
+        setSubmitStatus("idle")
+      }, 5000)
     } catch (error) {
       console.error("Form submission error:", error)
       setSubmitStatus("error")
+
+      // Reset error message after 5 seconds
+      setTimeout(() => {
+        setSubmitStatus("idle")
+      }, 5000)
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  const handleSendAnother = () => {
+    setSubmitStatus("idle")
+  }
+
+  if (submitStatus === "success") {
+    return (
+      <section id="contact" className="py-24 bg-muted/50">
+        <div className="container mx-auto px-4">
+          <div className="max-w-2xl mx-auto text-center">
+            <div className="flex flex-col items-center space-y-6">
+              <CheckCircle className="h-16 w-16 text-green-500" />
+              <h2 className="text-3xl font-bold tracking-tight">Message Sent!</h2>
+              <p className="text-lg text-muted-foreground">
+                Thank you for reaching out. I'll get back to you as soon as possible.
+              </p>
+              <Button onClick={handleSendAnother} variant="outline">
+                Send Another Message
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+    )
   }
 
   return (
@@ -170,14 +205,9 @@ export default function ContactForm() {
                   />
                 </div>
 
-                {submitStatus === "success" && (
-                  <div className="p-4 bg-green-50 border border-green-200 rounded-md">
-                    <p className="text-green-800">Thank you! Your message has been sent successfully.</p>
-                  </div>
-                )}
-
                 {submitStatus === "error" && (
-                  <div className="p-4 bg-red-50 border border-red-200 rounded-md">
+                  <div className="flex items-center space-x-2 p-4 bg-red-50 border border-red-200 rounded-md">
+                    <XCircle className="h-5 w-5 text-red-500 flex-shrink-0" />
                     <p className="text-red-800">Sorry, there was an error sending your message. Please try again.</p>
                   </div>
                 )}

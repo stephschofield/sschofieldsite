@@ -3,6 +3,7 @@
 import { useRef, useEffect, useState } from "react"
 import { ArrowDown } from "lucide-react"
 import Link from "next/link"
+import { useTheme } from "next-themes"
 
 interface ParticleHeroProps {
   onExploreClick?: () => void
@@ -13,6 +14,13 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
   const mousePositionRef = useRef({ x: 0, y: 0 })
   const isTouchingRef = useRef(false)
   const [isMobile, setIsMobile] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  const { theme, resolvedTheme } = useTheme()
+
+  // Set mounted state to avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Set isMobile state only once on mount
   useEffect(() => {
@@ -27,8 +35,52 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
     return () => window.removeEventListener("resize", handleResize)
   }, [])
 
+  // Get theme-based colors
+  const getThemeColors = () => {
+    const isDark = resolvedTheme === "dark"
+
+    return {
+      background: isDark ? "#0a0a0a" : "#f8f9fa", // Dark background for dark mode
+      textColor: isDark ? "#e5e5e5" : "#333333", // Light text for dark mode
+      particleColor: isDark ? "#a1a1aa" : "#555555", // Light particles for dark mode
+      scatteredColors: isDark
+        ? [
+            // Brighter blues for dark mode
+            "#60A5FA", // Blue 400
+            "#3B82F6", // Blue 500
+            "#2563EB", // Blue 600
+            "#1D4ED8", // Blue 700
+            "#1E40AF", // Blue 800
+            "#1E3A8A", // Blue 900
+            "#7C3AED", // Violet 600
+            "#8B5CF6", // Violet 500
+            "#A855F7", // Purple 500
+            "#C084FC", // Purple 400
+            "#06B6D4", // Cyan 500
+            "#0891B2", // Cyan 600
+          ]
+        : [
+            // Original blues for light mode
+            "#E3F2FD", // Light Blue 50
+            "#BBDEFB", // Light Blue 100
+            "#90CAF9", // Light Blue 200
+            "#64B5F6", // Light Blue 300
+            "#42A5F5", // Light Blue 400
+            "#2196F3", // Light Blue 500
+            "#1E88E5", // Light Blue 600
+            "#1976D2", // Light Blue 700
+            "#1565C0", // Light Blue 800
+            "#0D47A1", // Light Blue 900
+            "#0277BD", // Light Blue A700
+            "#01579B", // Light Blue A900
+          ],
+    }
+  }
+
   // Particle animation effect
   useEffect(() => {
+    if (!mounted) return // Wait for theme to be resolved
+
     const canvas = canvasRef.current
     if (!canvas) return
 
@@ -59,7 +111,8 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
     function createTextImage() {
       if (!ctx || !canvas) return 0
 
-      ctx.fillStyle = "#333333" // Dark gray text for better contrast on light background
+      const colors = getThemeColors()
+      ctx.fillStyle = colors.textColor
       ctx.save()
 
       // Calculate text size based on canvas dimensions
@@ -126,22 +179,8 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
       const x = pixel.x + (Math.random() * 2 - 1)
       const y = pixel.y + (Math.random() * 2 - 1)
 
-      // Generate a blue color from a blue gradient palette
-      const blueColors = [
-        "#E3F2FD", // Light Blue 50
-        "#BBDEFB", // Light Blue 100
-        "#90CAF9", // Light Blue 200
-        "#64B5F6", // Light Blue 300
-        "#42A5F5", // Light Blue 400
-        "#2196F3", // Light Blue 500
-        "#1E88E5", // Light Blue 600
-        "#1976D2", // Light Blue 700
-        "#1565C0", // Light Blue 800
-        "#0D47A1", // Light Blue 900
-        "#0277BD", // Light Blue A700
-        "#01579B", // Light Blue A900
-      ]
-      const randomBlue = blueColors[Math.floor(Math.random() * blueColors.length)]
+      const colors = getThemeColors()
+      const randomColor = colors.scatteredColors[Math.floor(Math.random() * colors.scatteredColors.length)]
 
       return {
         x,
@@ -149,8 +188,8 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
         baseX: x,
         baseY: y,
         size: Math.random() * 0.8 + 0.2, // Even smaller particles for higher density
-        color: "#555555", // Darker gray for particles on light background
-        scatteredColor: randomBlue,
+        color: colors.particleColor,
+        scatteredColor: randomColor,
         life: Math.random() * 100 + 50,
       }
     }
@@ -195,8 +234,10 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
 
     function animate(scale: number) {
       if (!ctx || !canvas) return
+
+      const colors = getThemeColors()
       ctx.clearRect(0, 0, canvas.width, canvas.height)
-      ctx.fillStyle = "#f8f9fa" // Light gray background
+      ctx.fillStyle = colors.background
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
       const { x: mouseX, y: mouseY } = mousePositionRef.current
@@ -232,9 +273,9 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
 
           // Apply color change only to particles very close to cursor
           if (distance < colorDistance && (isTouchingRef.current || !("ontouchstart" in window))) {
-            ctx.fillStyle = p.scatteredColor // Use blue color for particles under cursor
+            ctx.fillStyle = p.scatteredColor // Use theme-appropriate color for particles under cursor
           } else {
-            ctx.fillStyle = p.color // Use default gray color
+            ctx.fillStyle = p.color // Use theme-appropriate default color
           }
 
           ctx.fillRect(p.x, p.y, p.size, p.size)
@@ -322,10 +363,16 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
       canvas.removeEventListener("touchend", handleTouchEnd)
       cancelAnimationFrame(animationFrameId)
     }
-  }, [isMobile]) // Only depend on isMobile
+  }, [isMobile, mounted, resolvedTheme]) // Added resolvedTheme as dependency
+
+  // Get theme-appropriate background class
+  const getBackgroundClass = () => {
+    if (!mounted) return "bg-gray-50" // Default light background during SSR
+    return resolvedTheme === "dark" ? "bg-gray-950" : "bg-gray-50"
+  }
 
   return (
-    <div className="relative w-full h-screen flex flex-col items-center justify-center bg-gray-50">
+    <div className={`relative w-full h-screen flex flex-col items-center justify-center ${getBackgroundClass()}`}>
       <canvas
         ref={canvasRef}
         className="w-full h-full absolute top-0 left-0 touch-none"
