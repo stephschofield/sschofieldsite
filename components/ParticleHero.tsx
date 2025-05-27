@@ -115,8 +115,9 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
       ctx.fillStyle = colors.textColor
       ctx.save()
 
-      // Calculate text size based on canvas dimensions
-      const fontSize = isMobile ? 64 : 140
+      // Calculate text size to span across the page
+      const baseViewportWidth = canvas.width
+      const fontSize = isMobile ? baseViewportWidth * 0.12 : baseViewportWidth * 0.08 // Much larger font size
       const welcomeText = "Welcome to"
       const officeText = "my office"
 
@@ -126,14 +127,15 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
 
       // Check if text is too wide for the canvas and adjust if needed
       const maxWidth = Math.max(welcomeWidth, officeWidth)
-      const canvasWidth = canvas.width * 0.9 // Use 90% of canvas width
+      const canvasWidth = canvas.width * 0.95 // Use 95% of canvas width for better spanning
 
       let scaleFactor = 1
       if (maxWidth > canvasWidth) {
         scaleFactor = canvasWidth / maxWidth
       }
 
-      const adjustedFontSize = fontSize * scaleFactor
+      // Ensure minimum readable size while maximizing span
+      const adjustedFontSize = Math.max(fontSize * scaleFactor, isMobile ? 80 : 120)
       ctx.font = `bold ${adjustedFontSize}px sans-serif`
 
       const lineHeight = adjustedFontSize * 1.2
