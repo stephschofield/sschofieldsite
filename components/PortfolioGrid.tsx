@@ -19,51 +19,30 @@ interface Project {
 const projects: Project[] = [
   {
     id: "1",
-    title: "Productivity App",
-    description: "A productivity app designed to help users manage their tasks and time effectively.",
-    image: "/productivity-app-interface.png",
-    tags: ["React", "TypeScript", "Tailwind"],
-    link: "/projects/productivity-app",
+    title: "Contoso Data Products",
+    description:
+      "A comprehensive data products platform showcasing enterprise-level data solutions, analytics dashboards, and business intelligence tools with modern UI/UX design.",
+    image: "/contoso-data-products.png",
+    tags: ["React", "Data Analytics", "Enterprise", "UI/UX"],
+    link: "https://contoso-data-products.com/",
   },
   {
     id: "2",
-    title: "Meditation App",
-    description: "A meditation app with guided sessions and progress tracking.",
-    image: "/meditation-app-interface.png",
-    tags: ["React Native", "Redux", "Node.js"],
-    link: "/projects/meditation-app",
+    title: "FitMix - Spotify Fitness App",
+    description:
+      "An innovative fitness application that integrates with Spotify to create personalized workout playlists, track fitness goals, and provide an engaging exercise experience.",
+    image: "/fitmix-app.png",
+    tags: ["React", "Spotify API", "Fitness", "Music Integration"],
+    link: "https://v0-spotify-fitness-app.vercel.app/",
   },
   {
     id: "3",
-    title: "Color Palette Tool",
-    description: "A tool for designers to create and export color palettes for their projects.",
-    image: "/color-palette-tool.png",
-    tags: ["JavaScript", "Canvas API", "CSS"],
-    link: "/projects/color-palette",
-  },
-  {
-    id: "4",
-    title: "Typography Tool",
-    description: "A web application for testing and comparing different typography combinations.",
-    image: "/typography-tool-interface.png",
-    tags: ["Vue.js", "SCSS", "Firebase"],
-    link: "/projects/typography-tool",
-  },
-  {
-    id: "5",
-    title: "Fashion Boutique Website",
-    description: "An e-commerce website for a fashion boutique with a focus on user experience.",
-    image: "/fashion-boutique-website.png",
-    tags: ["Next.js", "Stripe", "MongoDB"],
-    link: "/projects/fashion-boutique",
-  },
-  {
-    id: "6",
-    title: "Analytics Dashboard",
-    description: "A comprehensive analytics dashboard for tracking business metrics.",
-    image: "/analytics-dashboard.png",
-    tags: ["React", "D3.js", "GraphQL"],
-    link: "/projects/analytics-dashboard",
+    title: "Emily & Matthew's Wedding Site",
+    description:
+      "A beautiful, personalized wedding website featuring event details, RSVP functionality, photo galleries, and guest information with elegant design and smooth user experience.",
+    image: "/emily-matthew-wedding.png",
+    tags: ["Next.js", "Wedding", "RSVP", "Photography"],
+    link: "https://www.emandmatthew.com/",
   },
 ]
 
@@ -94,10 +73,11 @@ export default function PortfolioGrid() {
   const handleProjectClick = (link: string) => {
     try {
       if (link) {
-        router.push(link)
+        // Open external links in new tab
+        window.open(link, "_blank", "noopener,noreferrer")
       }
     } catch (error) {
-      console.error("Error navigating to project:", error)
+      console.error("Error opening project:", error)
     }
   }
 
@@ -111,7 +91,7 @@ export default function PortfolioGrid() {
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1, 2, 3, 4, 5, 6].map((i) => (
+          {[1, 2, 3].map((i) => (
             <ProjectCard key={i} />
           ))}
         </div>
