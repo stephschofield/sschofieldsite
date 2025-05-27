@@ -268,10 +268,12 @@ export default function SkillsSection() {
                         {category.id === "design" ? (
                           <>
                             <a
-                              href="/projects/mindfull"
+                              href="https://www.emandmatthew.com/"
+                              target="_blank"
+                              rel="noopener noreferrer"
                               className="inline-flex items-center px-4 py-2 border rounded-md hover:bg-muted transition-colors"
                             >
-                              Mindfull App
+                              Emily & Matthew's Wedding Site
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
@@ -287,10 +289,12 @@ export default function SkillsSection() {
                               </svg>
                             </a>
                             <a
-                              href="/projects/palette"
+                              href="https://contoso-data-products.com/"
+                              target="_blank"
+                              rel="noopener noreferrer"
                               className="inline-flex items-center px-4 py-2 border rounded-md hover:bg-muted transition-colors"
                             >
-                              Palette Tool
+                              Contoso Data Products
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
@@ -309,10 +313,12 @@ export default function SkillsSection() {
                         ) : category.id === "frontend" ? (
                           <>
                             <a
-                              href="/projects/flowspace"
+                              href="https://v0-spotify-fitness-app.vercel.app/"
+                              target="_blank"
+                              rel="noopener noreferrer"
                               className="inline-flex items-center px-4 py-2 border rounded-md hover:bg-muted transition-colors"
                             >
-                              Flowspace
+                              FitMix - Spotify Fitness App
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
@@ -328,10 +334,12 @@ export default function SkillsSection() {
                               </svg>
                             </a>
                             <a
-                              href="/projects/typeform"
+                              href="https://contoso-data-products.com/"
+                              target="_blank"
+                              rel="noopener noreferrer"
                               className="inline-flex items-center px-4 py-2 border rounded-md hover:bg-muted transition-colors"
                             >
-                              Typeform
+                              Contoso Data Products
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
@@ -350,10 +358,12 @@ export default function SkillsSection() {
                         ) : category.id === "backend" ? (
                           <>
                             <a
-                              href="/projects/flowspace"
+                              href="https://contoso-data-products.com/"
+                              target="_blank"
+                              rel="noopener noreferrer"
                               className="inline-flex items-center px-4 py-2 border rounded-md hover:bg-muted transition-colors"
                             >
-                              Flowspace API
+                              Contoso Data Products
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
@@ -369,10 +379,12 @@ export default function SkillsSection() {
                               </svg>
                             </a>
                             <a
-                              href="/projects/palette"
+                              href="https://v0-spotify-fitness-app.vercel.app/"
+                              target="_blank"
+                              rel="noopener noreferrer"
                               className="inline-flex items-center px-4 py-2 border rounded-md hover:bg-muted transition-colors"
                             >
-                              Palette Backend
+                              FitMix - Spotify Integration
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
@@ -391,10 +403,33 @@ export default function SkillsSection() {
                         ) : category.id === "mobile" ? (
                           <>
                             <a
-                              href="/projects/mindfull"
+                              href="https://v0-spotify-fitness-app.vercel.app/"
+                              target="_blank"
+                              rel="noopener noreferrer"
                               className="inline-flex items-center px-4 py-2 border rounded-md hover:bg-muted transition-colors"
                             >
-                              Mindfull Mobile
+                              FitMix - Mobile Experience
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                className="ml-2 h-4 w-4"
+                              >
+                                <path d="M5 12h14" />
+                                <path d="m12 5 7 7-7 7" />
+                              </svg>
+                            </a>
+                            <a
+                              href="https://www.emandmatthew.com/"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center px-4 py-2 border rounded-md hover:bg-muted transition-colors"
+                            >
+                              Emily & Matthew's Wedding Site
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
@@ -413,10 +448,10 @@ export default function SkillsSection() {
                         ) : (
                           <>
                             <a
-                              href="/projects"
+                              href="/portfolio"
                               className="inline-flex items-center px-4 py-2 border rounded-md hover:bg-muted transition-colors"
                             >
-                              All Projects
+                              View All Projects
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
