@@ -6,7 +6,6 @@ import Link from "next/link"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { CommandMenu } from "@/components/CommandMenu"
-import { ProfileSheet } from "@/components/ProfileSheet"
 import { ThemeSwitcher } from "./ThemeSwitcher"
 import { Menu, X } from "lucide-react"
 import { MainNav } from "./MainNav"
@@ -67,7 +66,6 @@ export default function Header() {
             <CommandMenu />
           </div>
           <ThemeSwitcher />
-          <ProfileSheet />
 
           <Button variant="ghost" className="md:hidden" size="icon" onClick={toggleMobileMenu}>
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}

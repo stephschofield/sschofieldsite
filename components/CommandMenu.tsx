@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Calendar, CreditCard, Settings, Smile, User, Search, Command } from "lucide-react"
+import { Search, Home, User, FileText, Palette } from "lucide-react"
 import {
   CommandDialog,
   CommandEmpty,
@@ -30,17 +30,16 @@ export function CommandMenu() {
     return () => document.removeEventListener("keydown", down)
   }, [])
 
-  // Use default values directly
-  const user = {
-    name: "Stephanie Schofield",
-    email: "stephanie@example.com",
-  }
-
   const handleSelect = (value: string) => {
     try {
       setOpen(false)
       if (value.startsWith("/")) {
         router.push(value)
+      } else if (value.startsWith("#")) {
+        const element = document.getElementById(value.substring(1))
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" })
+        }
       }
     } catch (error) {
       console.error("Error in handleSelect:", error)
@@ -64,40 +63,29 @@ export function CommandMenu() {
         <CommandInput placeholder="Type a command or search..." />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading="Suggestions">
+          <CommandGroup heading="Navigation">
+            <CommandItem onSelect={() => handleSelect("/")}>
+              <Home className="mr-2 h-4 w-4" />
+              <span>Home</span>
+            </CommandItem>
             <CommandItem onSelect={() => handleSelect("/portfolio")}>
-              <Search className="mr-2 h-4 w-4" />
+              <User className="mr-2 h-4 w-4" />
               <span>Portfolio</span>
             </CommandItem>
             <CommandItem onSelect={() => handleSelect("/projects")}>
-              <Calendar className="mr-2 h-4 w-4" />
+              <FileText className="mr-2 h-4 w-4" />
               <span>Projects</span>
             </CommandItem>
-            <CommandItem onSelect={() => handleSelect("/contact")}>
-              <CreditCard className="mr-2 h-4 w-4" />
+            <CommandItem onSelect={() => handleSelect("#contact")}>
+              <Search className="mr-2 h-4 w-4" />
               <span>Contact</span>
             </CommandItem>
           </CommandGroup>
           <CommandSeparator />
           <CommandGroup heading="Settings">
-            <CommandItem onSelect={() => handleSelect("/settings")}>
-              <Settings className="mr-2 h-4 w-4" />
-              <span>Settings</span>
-            </CommandItem>
             <CommandItem onSelect={() => handleSelect("/theme-settings")}>
-              <Smile className="mr-2 h-4 w-4" />
-              <span>Theme</span>
-            </CommandItem>
-          </CommandGroup>
-          <CommandSeparator />
-          <CommandGroup heading="Profile">
-            <CommandItem>
-              <User className="mr-2 h-4 w-4" />
-              <span>{user.name}</span>
-            </CommandItem>
-            <CommandItem>
-              <Command className="mr-2 h-4 w-4" />
-              <span>{user.email}</span>
+              <Palette className="mr-2 h-4 w-4" />
+              <span>Theme Settings</span>
             </CommandItem>
           </CommandGroup>
         </CommandList>
