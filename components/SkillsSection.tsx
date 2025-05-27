@@ -62,7 +62,7 @@ export default function SkillsSection() {
         { name: "GraphQL", level: 80, icon: <Database className="h-4 w-4" /> },
         { name: "REST APIs", level: 90, icon: <Server className="h-4 w-4" /> },
       ],
-      tools: ["Postman", "MongoDB Compass", "pgAdmin", "Docker", "AWS", "Firebase"],
+      tools: ["Postman", "MongoDB Compass", "pgAdmin", "Docker", "Firebase"],
     },
     {
       id: "mobile",
@@ -90,7 +90,7 @@ export default function SkillsSection() {
         { name: "Performance Optimization", level: 86, icon: <Gauge className="h-4 w-4" /> },
         { name: "Technical Writing", level: 83, icon: <Code2 className="h-4 w-4" /> },
       ],
-      tools: ["Jira", "Trello", "Google Analytics", "Lighthouse", "WAVE", "Asana", "Notion"],
+      tools: ["Jira", "Lighthouse", "WAVE", "Notion"],
     },
   ]
 
