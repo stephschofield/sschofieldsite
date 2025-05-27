@@ -115,9 +115,9 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
       ctx.fillStyle = colors.textColor
       ctx.save()
 
-      // Calculate text size to span across the page
+      // Calculate text size to span across the page - 15% smaller
       const baseViewportWidth = canvas.width
-      const fontSize = isMobile ? baseViewportWidth * 0.2 : baseViewportWidth * 0.15
+      const fontSize = isMobile ? baseViewportWidth * 0.17 : baseViewportWidth * 0.1275 // Reduced by 15%
       const welcomeText = "Welcome to"
       const officeText = "my office"
 
