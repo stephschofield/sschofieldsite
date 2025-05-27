@@ -13,7 +13,6 @@ export function MainNav() {
   const navItems = [
     { name: "Home", href: "/" },
     { name: "Portfolio", href: "/portfolio" },
-    { name: "Projects", href: "/projects" },
     { name: "Contact", href: "#contact" },
   ]
 
