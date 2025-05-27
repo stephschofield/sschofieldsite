@@ -85,18 +85,18 @@ export default function Header() {
               Home
             </Link>
             <Link
+              href="/about"
+              className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+              onClick={closeMobileMenu}
+            >
+              About
+            </Link>
+            <Link
               href="/portfolio"
               className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
               onClick={closeMobileMenu}
             >
               Portfolio
-            </Link>
-            <Link
-              href="/projects"
-              className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
-              onClick={closeMobileMenu}
-            >
-              Projects
             </Link>
             <a
               href="#contact"

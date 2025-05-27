@@ -68,13 +68,13 @@ export function CommandMenu() {
               <Home className="mr-2 h-4 w-4" />
               <span>Home</span>
             </CommandItem>
-            <CommandItem onSelect={() => handleSelect("/portfolio")}>
+            <CommandItem onSelect={() => handleSelect("/about")}>
               <User className="mr-2 h-4 w-4" />
-              <span>Portfolio</span>
+              <span>About</span>
             </CommandItem>
-            <CommandItem onSelect={() => handleSelect("/projects")}>
+            <CommandItem onSelect={() => handleSelect("/portfolio")}>
               <FileText className="mr-2 h-4 w-4" />
-              <span>Projects</span>
+              <span>Portfolio</span>
             </CommandItem>
             <CommandItem onSelect={() => handleSelect("#contact")}>
               <Search className="mr-2 h-4 w-4" />
