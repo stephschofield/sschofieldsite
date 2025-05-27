@@ -152,10 +152,10 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
       textImageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      // Store all text pixels for more efficient particle creation - MUCH DENSER
+      // Store all text pixels for more efficient particle creation - OPTIMIZED FOR PERFORMANCE
       textPixels = []
       const data = textImageData.data
-      const pixelGap = 1 // Sample every pixel for maximum density on both mobile and desktop
+      const pixelGap = isMobile ? 2 : 1 // Slightly reduce density on mobile for better performance
 
       for (let y = 0; y < canvas.height; y += pixelGap) {
         for (let x = 0; x < canvas.width; x += pixelGap) {
@@ -177,8 +177,8 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
       const pixel = textPixels[pixelIndex]
 
       // Reduce randomness for tighter particle concentration
-      const x = pixel.x + (Math.random() * 1 - 0.5) // Reduced from 2 to 1
-      const y = pixel.y + (Math.random() * 1 - 0.5) // Reduced from 2 to 1
+      const x = pixel.x + (Math.random() * 1 - 0.5)
+      const y = pixel.y + (Math.random() * 1 - 0.5)
 
       const colors = getThemeColors()
       const randomColor = colors.scatteredColors[Math.floor(Math.random() * colors.scatteredColors.length)]
@@ -188,7 +188,7 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
         y,
         baseX: x,
         baseY: y,
-        size: Math.random() * 0.6 + 0.2, // Slightly smaller particles for higher density
+        size: Math.random() * 0.6 + 0.2,
         color: colors.particleColor,
         scatteredColor: randomColor,
         life: Math.random() * 100 + 50,
@@ -196,16 +196,16 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
     }
 
     function createInitialParticles(scale: number) {
-      // MUCH HIGHER particle density for concentrated letters
-      const particlesPerPixel = 3.0 // Increased from 1.0 to 3.0 for much denser particles
+      // OPTIMIZED particle density for better performance
+      const particlesPerPixel = isMobile ? 2.0 : 2.5 // Reduced for better performance
       const targetCount = Math.floor(textPixels.length * particlesPerPixel)
-      const maxParticles = 120000 // Increased from 40000 to 120000 for more particles
+      const maxParticles = isMobile ? 60000 : 80000 // Reduced for smoother performance
       const particleCount = Math.min(targetCount, maxParticles)
 
       console.log(`Creating particles for ${textPixels.length} text pixels, target: ${particleCount}`)
 
       // Create particles in batches for better performance
-      const batchSize = 2000 // Increased batch size for faster creation
+      const batchSize = 3000
       let created = 0
 
       function createBatch() {
@@ -221,7 +221,6 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
         }
 
         if (created < particleCount) {
-          // Use setTimeout to avoid blocking the main thread
           setTimeout(createBatch, 0)
         } else {
           console.log(`Created ${created} particles`)
@@ -242,11 +241,11 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
       const { x: mouseX, y: mouseY } = mousePositionRef.current
-      const maxDistance = 240
-      const colorDistance = 120 // Increased radius for color change
+      const maxDistance = 200 // Slightly reduced for better performance
+      const colorDistance = 100 // Reduced for better performance
 
-      // Process particles in larger chunks for better performance with high particle counts
-      const chunkSize = 8000 // Increased chunk size for better performance
+      // OPTIMIZED: Smaller chunks for more responsive animation
+      const chunkSize = 3000 // Reduced chunk size for more frequent updates
       const totalChunks = Math.ceil(particles.length / chunkSize)
 
       for (let chunk = 0; chunk < totalChunks; chunk++) {
@@ -259,24 +258,25 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
           const dy = mouseY - p.y
           const distance = Math.sqrt(dx * dx + dy * dy)
 
-          // Apply movement effect based on maxDistance
+          // FASTER, MORE RESPONSIVE movement
           if (distance < maxDistance && (isTouchingRef.current || !("ontouchstart" in window))) {
             const force = (maxDistance - distance) / maxDistance
             const angle = Math.atan2(dy, dx)
-            const moveX = Math.cos(angle) * force * 60
-            const moveY = Math.sin(angle) * force * 60
+            const moveX = Math.cos(angle) * force * 80 // Increased from 60 to 80 for faster response
+            const moveY = Math.sin(angle) * force * 80 // Increased from 60 to 80 for faster response
             p.x = p.baseX - moveX
             p.y = p.baseY - moveY
           } else {
-            p.x += (p.baseX - p.x) * 0.1
-            p.y += (p.baseY - p.y) * 0.1
+            // FASTER return to base position
+            p.x += (p.baseX - p.x) * 0.15 // Increased from 0.1 to 0.15 for faster return
+            p.y += (p.baseY - p.y) * 0.15 // Increased from 0.1 to 0.15 for faster return
           }
 
           // Apply color change only to particles very close to cursor
           if (distance < colorDistance && (isTouchingRef.current || !("ontouchstart" in window))) {
-            ctx.fillStyle = p.scatteredColor // Use theme-appropriate color for particles under cursor
+            ctx.fillStyle = p.scatteredColor
           } else {
-            ctx.fillStyle = p.color // Use theme-appropriate default color
+            ctx.fillStyle = p.color
           }
 
           ctx.fillRect(p.x, p.y, p.size, p.size)
@@ -294,10 +294,9 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
         }
       }
 
-      // Maintain high particle count - increased target
-      if (particles.length < textPixels.length * 2.5) {
-        // Target slightly below max to avoid constant regeneration
-        const batchSize = Math.min(50, textPixels.length - particles.length) // Increased batch size
+      // Maintain particle count with less aggressive regeneration
+      if (particles.length < textPixels.length * 2.0) {
+        const batchSize = Math.min(30, textPixels.length - particles.length)
         for (let i = 0; i < batchSize; i++) {
           const newParticle = createParticle(scale)
           if (newParticle) particles.push(newParticle)
@@ -322,14 +321,26 @@ export default function ParticleHero({ onExploreClick }: ParticleHeroProps) {
       mousePositionRef.current = { x, y }
     }
 
+    // OPTIMIZED: Throttled mouse movement for better performance
+    let lastMoveTime = 0
     const handleMouseMove = (e: MouseEvent) => {
-      handleMove(e.clientX, e.clientY)
+      const now = performance.now()
+      if (now - lastMoveTime > 8) {
+        // Throttle to ~120fps max
+        handleMove(e.clientX, e.clientY)
+        lastMoveTime = now
+      }
     }
 
     const handleTouchMove = (e: TouchEvent) => {
       if (e.touches.length > 0) {
         e.preventDefault()
-        handleMove(e.touches[0].clientX, e.touches[0].clientY)
+        const now = performance.now()
+        if (now - lastMoveTime > 8) {
+          // Throttle to ~120fps max
+          handleMove(e.touches[0].clientX, e.touches[0].clientY)
+          lastMoveTime = now
+        }
       }
     }
 
