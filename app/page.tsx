@@ -7,15 +7,13 @@ import ParticleHero from "@/components/ParticleHero"
 import Header from "@/components/Header"
 import PortfolioGrid from "@/components/PortfolioGrid"
 import Footer from "@/components/Footer"
-import { useToast } from "@/hooks/use-toast"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Send, Mail, Phone, MapPin } from "lucide-react"
+import { Send, Mail, MapPin } from "lucide-react"
 
 export default function Home() {
   const [showPortfolio, setShowPortfolio] = useState(false)
-  const { toast } = useToast()
   const [formSubmitted, setFormSubmitted] = useState(false)
 
   const handleExploreClick = () => {
@@ -30,12 +28,6 @@ export default function Home() {
           portfolioSection.scrollIntoView({ behavior: "smooth" })
         }
       }, 100)
-
-      // Show toast notification
-      toast({
-        title: "Welcome to my portfolio!",
-        description: "Feel free to explore my projects and get in touch.",
-      })
     } catch (error) {
       console.error("Error in handleExploreClick:", error)
     }
@@ -44,10 +36,6 @@ export default function Home() {
   const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setFormSubmitted(true)
-    toast({
-      title: "Message sent!",
-      description: "Thank you for your message. I'll get back to you soon.",
-    })
   }
 
   return (
@@ -81,15 +69,11 @@ export default function Home() {
               <div className="space-y-4 mt-8">
                 <div className="flex items-center space-x-3">
                   <Mail className="h-5 w-5 text-primary" />
-                  <span>stephanie@example.com</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <Phone className="h-5 w-5 text-primary" />
-                  <span>(123) 456-7890</span>
+                  <span>steph.schofield@outlook.com</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <MapPin className="h-5 w-5 text-primary" />
-                  <span>San Francisco, CA</span>
+                  <span>Dallas, Texas</span>
                 </div>
               </div>
             </div>
