@@ -4,7 +4,7 @@ import { motion } from "framer-motion"
 import SkillsSection from "@/components/SkillsSection"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { MapPin, Calendar, Award, Users } from "lucide-react"
+import { MapPin, Calendar, Award } from "lucide-react"
 
 export default function AboutPage() {
   return (
@@ -54,10 +54,6 @@ export default function AboutPage() {
                       <Award className="h-4 w-4 text-primary" />
                       <span>UI/UX Design & Full-Stack Development</span>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <Users className="h-4 w-4 text-primary" />
-                      <span>Available for New Projects</span>
-                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -95,16 +91,22 @@ export default function AboutPage() {
                         <Badge variant="secondary">Next.js</Badge>
                         <Badge variant="secondary">TypeScript</Badge>
                         <Badge variant="secondary">Node.js</Badge>
+                        <Badge variant="secondary">Python</Badge>
+                        <Badge variant="secondary">C/C++</Badge>
                       </div>
                     </div>
 
                     <div>
                       <h3 className="font-medium mb-2">Tools & Platforms</h3>
                       <div className="flex flex-wrap gap-2">
-                        <Badge variant="secondary">Figma</Badge>
-                        <Badge variant="secondary">Adobe Creative Suite</Badge>
+                        <Badge variant="secondary">Azure</Badge>
+                        <Badge variant="secondary">Fabric</Badge>
+                        <Badge variant="secondary">GitHub Copilot</Badge>
                         <Badge variant="secondary">Vercel</Badge>
-                        <Badge variant="secondary">AWS</Badge>
+                        <Badge variant="secondary">Figma</Badge>
+                        <Badge variant="secondary">Mural</Badge>
+                        <Badge variant="secondary">Cursor</Badge>
+                        <Badge variant="secondary">ADO</Badge>
                       </div>
                     </div>
                   </div>
