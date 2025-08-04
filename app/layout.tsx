@@ -11,15 +11,15 @@ export const metadata = {
   description: "Personal portfolio website showcasing my work and skills",
   generator: "v0.dev",
   icons: {
-    icon: "/stephanie-profile.jpeg",
-    apple: "/stephanie-profile.jpeg",
+    icon: "/stephanie-headshot.jpeg",
+    apple: "/stephanie-headshot.jpeg",
   },
   openGraph: {
     title: "Stephanie Schofield - Personal Portfolio",
     description: "Personal portfolio website showcasing my work and skills",
     images: [
       {
-        url: "/stephanie-profile.jpeg",
+        url: "/stephanie-headshot.jpeg",
         width: 800,
         height: 800,
         alt: "Stephanie Schofield",
@@ -30,7 +30,7 @@ export const metadata = {
     card: "summary_large_image",
     title: "Stephanie Schofield - Personal Portfolio",
     description: "Personal portfolio website showcasing my work and skills",
-    images: ["/stephanie-profile.jpeg"],
+    images: ["/stephanie-headshot.jpeg"],
     creator: "@stephanieschofield",
   },
 }
